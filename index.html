@@ -1,0 +1,4195 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>العاب عزيز AzizGames-NITRO FIRE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"
+          integrity="sha512-ds/AB4h27GGrkJwUzExlFl+GjQ9qiJlU7n+WspnZFxZj55qz0pvRBoBZY+1x2ea9aM21SdjW49QwscUbf2pL0w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+  	/* === عداد النقاط في شاشة البداية === */
+#startScreenPointsCounter {
+  position: absolute;
+  top: 20px; /* نفس المسافة من الأعلى مثل عداد العملات */
+  right: 20px; /* المسافة من اليمين */
+  z-index: 15;
+  background-color: rgba(10, 15, 30, 0.85);
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 220, 220, 0.4);
+  box-shadow: 0 0 12px rgba(0, 220, 220, 0.5), inset 0 0 5px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Orbitron', sans-serif;
+  min-width: 40px;
+  text-align: center;
+}
+
+.start-points-icon {
+  font-size: 16px; /* حجم أيقونة النجمة */
+  line-height: 1;
+  color: #FFD700; /* لون ذهبي للنجمة (يمكن تغييره) */
+  text-shadow: 0 0 5px #fff, 0 0 8px #FFD700;
+}
+
+#startScreenPointsAmount {
+  font-size: 14px;
+  font-weight: 700;
+  color: #00ffff; /* لون سيان ساطع للرقم (يمكن تغييره) */
+  text-shadow: 0 0 5px #00ffff, 0 0 8px #00ffff;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+  	/* === عداد العملات في شاشة البداية === */
+#startScreenCoinCounter {
+  position: absolute;
+  top: 20px; /* المسافة من الأعلى */
+  left: 20px; /* المسافة من اليسار */
+  z-index: 15; /* للتأكد من ظهوره فوق عناصر أخرى إذا لزم الأمر */
+  background-color: rgba(10, 15, 30, 0.85); /* خلفية داكنة نايترو */
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 220, 220, 0.4); /* إطار سيان خفيف */
+  box-shadow: 0 0 12px rgba(0, 220, 220, 0.5), inset 0 0 5px rgba(0,0,0,0.3); /* توهج سيان وظل داخلي */
+  display: flex;
+  flex-direction: column; /* لترتيب الأيقونة فوق الرقم */
+  align-items: center;
+  font-family: 'Orbitron', sans-serif;
+  min-width: 40px; /* عرض أدنى للحفاظ على الشكل */
+  text-align: center;
+}
+
+.start-coin-icon {
+  font-size: 16px; /* حجم الأيقونة */
+  line-height: 1;
+  color: #ffd700; /* لون ذهبي للأيقونة */
+  text-shadow: 0 0 5px #fff, 0 0 8px #ffd700; /* توهج خفيف */
+}
+
+#startScreenCoinAmount {
+  font-size: 14px; /* حجم خط رقم العملات */
+  font-weight: 700;
+  color: #00ffff; /* لون سيان ساطع للرقم */
+  text-shadow: 0 0 5px #00ffff, 0 0 8px #00ffff;
+  line-height: 1.2;
+  margin-top: 2px; /* مسافة صغيرة بين الأيقونة والرقم */
+}
+  
+  	/* === CSS لحاوية أشرطة التقدم الجديدة === */
+#hudProgressBarsContainer {
+  position: absolute;
+  top: 70px; 
+  right: 15px; 
+  z-index: 6; 
+  background-color: rgba(20, 25, 40, 0.8); 
+  padding: 7px; 
+  border-radius: 8px; 
+  border: 1px solid rgba(0, 255, 255, 0.25); 
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4); 
+  display: flex;
+  flex-direction: column; 
+  gap: 7px; 
+  width: 50px; 
+}
+
+.hud-progress-bar {
+  height: 14px; 
+  border-radius: 7px; 
+  overflow: hidden; 
+  display: flex; 
+  align-items: center; 
+  padding: 0 4px; 
+  box-sizing: border-box; 
+  border: 1px solid rgba(120, 120, 150, 0.4); 
+}
+
+.hud-progress-icon {
+  font-size: 8px; 
+  margin-right: 2px; 
+  color: rgba(255, 255, 255, 0.8); 
+  line-height: 1; 
+  flex-shrink: 0; 
+}
+
+.hud-progress-bar .progress-fill {
+  height: 100%; 
+  width: 0%; 
+  border-radius: 5px; 
+  transition: width 0.25s ease-in-out; 
+}
+
+#shieldMeter {
+  background-color: rgba(255, 105, 180, 0.15); 
+}
+#shieldMeter .hud-progress-icon { 
+  color: #ffc0cb; 
+}
+#shieldMeter .progress-fill {
+  background-color: #ff69b4; 
+  box-shadow: inset 0 0 3px rgba(255,255,255,0.3), 0 0 4px #ff69b4; 
+}
+
+#magnetMeter {
+  background-color: rgba(255, 0, 0, 0.15); 
+}
+#magnetMeter .hud-progress-icon {
+  color: #ff9999; 
+}
+#magnetMeter .progress-fill {
+  background-color: #ff0000; 
+  box-shadow: inset 0 0 3px rgba(255,255,255,0.3), 0 0 4px #ff0000;
+}
+
+#protectionMeter {
+  background-color: rgba(255, 165, 0, 0.15); 
+}
+#protectionMeter .hud-progress-icon {
+  color: #ffd99a; 
+}
+#protectionMeter .progress-fill {
+  background-color: #ffa500; 
+  box-shadow: inset 0 0 3px rgba(255,255,255,0.3), 0 0 4px #ffa500;
+}
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(45deg, #000 25%, #0d0d0d 50%, #000 75%);
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+      direction: rtl;
+      font-family: 'Orbitron', Arial, sans-serif;
+      color: #0ff; 
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    canvas { display: block; margin: 0 auto; }
+    #gameCanvas { background: radial-gradient(ellipse at center, #001 0%, #000 100%); }
+
+    #initialLoadingOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center;
+      z-index: 1001;
+      padding-bottom: 0; 
+      box-sizing: border-box;
+    }
+    #loadingGameTitleContainer {
+        width: 200px; 
+        height: 100px; 
+        background: rgba(10, 10, 20, 0.8); 
+        border: 3px solid #0ff; 
+        box-shadow: 0 0 20px #0ff, inset 0 0 10px #0ff; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px; 
+        border-radius: 10px; 
+        transform: skew(-5deg); 
+    }
+    #loadingGameTitle {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 28px; 
+        font-weight: 700; 
+        color: #fff;
+        text-shadow: 0 0 5px #fff, 0 0 10px #0ff, 0 0 15px #0ff; 
+        letter-spacing: 1px;
+        text-align: center;
+        line-height: 1.2;
+         transform: skew(5deg); 
+    }
+    #initialLoadingProgressContainer {
+      width: 70%; 
+      max-width: 300px;
+      height: 15px; 
+      border: 2px solid #00ffff;
+      border-radius: 8px; 
+      overflow: hidden;
+      background: rgba(0, 255, 255, 0.15);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      margin-bottom: 15px;
+    }
+    #initialLoadingProgressBar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ffff, #00aaff); 
+      box-shadow: 0 0 12px #00ffff, inset 0 0 5px rgba(255,255,255,0.3); 
+      animation: initialProgressFill 7s linear forwards;
+    }
+    @keyframes initialProgressFill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+    #initialLoadingText {
+      font-size: 14px;
+      color: #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 8px #00ffff;
+      margin-top: 10px; 
+    }
+
+    #speedometer, #scoreBoard, #distanceBoard, #coinCounter {
+      position: absolute;
+      font-size: 10px;
+      color: #ff69b4;
+      background: rgba(0,0,0,0.7);
+      padding: 3px 6px;
+      border: 2px solid #ff69b4;
+      border-radius: 8px;
+      z-index: 6;
+      text-shadow: 0 0 10px #ff69b4;
+    }
+    #speedometer { top: 15px; left: 15px; }
+    #scoreBoard { top: 40px; left: 15px; }
+    #distanceBoard { top: 15px; right: 15px; }
+    #coinCounter { top: 40px; right: 15px; }
+    
+    #shieldBtn {
+      position: absolute;
+      bottom: 170px; /* <--- القيمة الجديدة */
+      right: 20px;
+      z-index: 6;
+      font-size: 24px;
+      background: linear-gradient(145deg, #00ffff, #004d4d);
+      border: 2px solid #0ff;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: opacity 0.3s, transform 0.2s;
+      box-shadow: 0 0 15px #0ff;
+    }
+    #shieldBtn:active { transform: scale(1.1); }
+    #superSpeedBtn {
+      position: absolute;
+      bottom: 170px; /* <--- القيمة الجديدة */
+      left: 20px;
+      z-index: 6;
+      font-size: 24px;
+      background: linear-gradient(145deg, #ff00ff, #990099);
+      border: 2px solid #ff00ff;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: opacity 0.3s, transform 0.2s;
+      box-shadow: 0 0 15px #ff00ff;
+    }
+     #superSpeedBtn:active { transform: scale(1.1); }
+
+    .control-btn {
+      position: absolute;
+      bottom: 60px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00ffff, #004d4d);
+      border: 2px solid #0ff;
+      font-size: 40px;
+      color: #0ff;
+      text-shadow: 0 0 8px #0ff;
+      outline: none;
+      user-select: none;
+      transition: transform 0.1s ease, background 0.2s ease;
+      z-index: 5;
+      box-shadow: 0 0 20px #0ff;
+    }
+    .control-btn:active {
+      transform: scale(0.9);
+      background: radial-gradient(circle, #00ffff, #003333);
+    }
+    #leftBtn { left: 20px; }
+    #rightBtn { right: 20px; }
+    
+    #startMessage {
+      font-size: 24px; 
+      color: #fff;    
+      text-shadow: 0 0 8px #0ff; 
+      margin-top: 60px;  
+      margin-bottom: 20px; 
+    }
+    #startOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #6a0dad, #8a2be2, #da70d6);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      color: #0ff;
+      font-size: 32px;
+      z-index: 10;
+      padding-bottom: 40px;
+      box-sizing: border-box;
+    }
+
+#startScreenGameTitleContainer {
+    width: 160px; 
+    height: 80px;  
+    background: rgba(10, 10, 20, 0.85);
+    border: 2px solid #0ff;
+    box-shadow: 0 0 15px #0ff, inset 0 0 10px #0ff; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px; 
+    border-radius: 8px; 
+    transform: skew(-5deg);
+    position: absolute;
+    top: 25px; 
+    left: 50%; 
+    transform: translateX(-50%) skew(-5deg); 
+}
+
+#startScreenGameTitleEnglish {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 4px #fff, 0 0 8px #0ff, 0 0 12px #0ff;
+    letter-spacing: 0.8px;
+    text-align: center;
+    transform: skew(5deg);
+    font-size: 22px; 
+    line-height: 1;
+}
+
+#startScreenGameTitleArabic {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 4px #fff, 0 0 8px #0ff, 0 0 12px #0ff;
+    letter-spacing: 0.8px;
+    text-align: center;
+    transform: skew(5deg);
+    font-size: 16px; 
+    line-height: 1;
+    margin-top: 4px; 
+}
+
+#startOverlay button:not(.footer-link-btn) {
+  font-family: 'Orbitron', sans-serif; 
+  background: linear-gradient(145deg, #2c3e50, #1a253c); 
+  color: #0ffff0; 
+  border: 2px solid #0ffff0; 
+  border-radius: 6px; 
+  padding: 14px 28px; 
+  font-size: 18px; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: 1.5px; 
+  cursor: pointer;
+  transition: all 0.2s ease-in-out; 
+  margin-bottom: 15px; 
+  z-index: 1;
+  box-shadow: 0 0 12px #0ffff0, 
+              0 0 25px rgba(0, 255, 255, 0.4), 
+              inset 0 0 6px rgba(0, 255, 255, 0.3); 
+  transform: skewX(-10deg); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 240px; 
+  position: relative; 
+}
+
+#startOverlay button:not(.footer-link-btn) > * { 
+  transform: skewX(10deg); 
+}
+
+#startOverlay button:not(.footer-link-btn) img {
+    margin-right: 12px; 
+    width: 22px; 
+    height: 22px;
+    filter: drop-shadow(0 0 3px #fff); 
+}
+
+#startOverlay button:not(.footer-link-btn):hover,
+#startOverlay button:not(.footer-link-btn):focus {
+  background: linear-gradient(145deg, #34495e, #2c3e50); 
+  color: #ffffff; 
+  border-color: #ffffff; 
+  box-shadow: 0 0 18px #0ffff0, 
+              0 0 35px rgba(0, 255, 255, 0.6),
+              0 0 8px #ffffff, 
+              inset 0 0 8px rgba(0, 255, 255, 0.4);
+  transform: skewX(-10deg) scale(1.08); 
+  outline: none;
+}
+
+#startOverlay button:not(.footer-link-btn):active {
+  transform: skewX(-10deg) scale(1.02); 
+  background: linear-gradient(145deg, #1a253c, #233140); 
+  box-shadow: 0 0 10px #0ffff0, inset 0 0 10px rgba(0,0,0,0.3); 
+}
+    #startFooter {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        z-index: 1;
+    }
+    #startFooter a {
+        color: #0ff;
+        text-decoration: none;
+        font-size: 12px;
+        margin: 0 10px;
+        cursor: pointer;
+        transition: text-shadow 0.3s;
+    }
+     #startFooter a:hover {
+         text-shadow: 0 0 8px #0ff;
+     }
+
+    .backBtn {
+      position: absolute;
+      top: 15px; 
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 12px;
+      font-size: 16px;
+      border: 2px solid #ff69b4;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      cursor: pointer;
+      border-radius: 8px;
+      z-index: 12; 
+      box-shadow: 0 0 8px #ff69b4;
+      transition: background 0.3s, transform 0.3s;
+      width: auto;
+    }
+    .backBtn:hover {
+      background: rgba(255,105,180,0.8);
+      transform: translateX(-50%) scale(1.05); /* Keep translateX for centering */
+    }
+    #gameOverOverlay .backBtn { display: none; }
+
+
+    #settingsOverlay, /* #achievementsOverlay, */ #storeOverlay, #aboutUsOverlay, #contactUsOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 70px 20px 20px 20px; 
+      box-sizing: border-box;
+      gap: 15px;
+      color: #0ff;
+      font-size: 28px;
+      z-index: 11;
+      overflow-y: auto;
+    }
+    /* Updated Achievements Overlay */
+    #achievementsOverlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.95);
+        display: none; /* Initially hidden */
+        flex-direction: column;
+        align-items: center;
+        padding: 20px; /* Adjusted padding */
+        padding-top: 70px; /* Space for back button and title */
+        box-sizing: border-box;
+        gap: 15px;
+        color: #0ff;
+        font-size: 20px; /* Base font size */
+        z-index: 11;
+        overflow-y: auto;
+    }
+    #achievementsTitle {
+        position: absolute;
+        top: 25px; /* Adjusted position */
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 26px; /* Adjusted font size */
+        text-shadow: 0 0 10px #0ff;
+    }
+    
+    /* Settings Screen */
+    #settingsOverlay { justify-content: center; }
+    #settingsTitle {
+        position: absolute;
+        top: 65px; 
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 30px;
+        text-shadow: 0 0 10px #0ff;
+    }
+
+    /* Store Screen */
+     #storeOverlay {
+        padding-top: 20px;
+        align-items: center; 
+     }
+    #storeTitle {
+        margin: 15px 0 5px 0; 
+        font-size: 26px; 
+        text-shadow: 0 0 10px #0ff;
+        text-align: center;
+    }
+    #storeHeader {
+      width: 90%;
+      text-align: center;
+      max-width: 450px;
+      margin-bottom: 15px; 
+      padding-top: 50px; 
+      position: relative; 
+    }
+    #storeCoinCounter {
+      font-size: 22px; 
+      margin-top: 8px; 
+      color: #ff69b4; 
+      text-shadow: 0 0 8px #ff69b4;
+    }
+    #storeProducts {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        gap: 10px; 
+    }
+    .productCard {
+      width: 90%;
+      background: rgba(0,255,255,0.15); 
+      border: 2px solid #0ff;
+      border-radius: 10px; 
+      padding: 15px; 
+      margin: 0; 
+      display: flex;
+      flex-direction: column; 
+      align-items: center; 
+      gap: 10px;
+      max-width: 380px; 
+      box-shadow: 0 0 10px rgba(0,255,255,0.3); 
+    }
+    .productImage {
+      width: 60px; 
+      height: 60px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid #0ff; 
+    }
+    .productInfo {
+        flex: 1;
+        text-align: center; 
+        width: 100%;
+    }
+    .productInfo h3 {
+      margin: 0 0 8px 0; 
+      font-size: 20px;
+      color: #fff; 
+    }
+    .productInfo p {
+        font-size: 14px;
+        margin: 4px 0; 
+        color: #bbb; 
+    }
+    .productInfo .productPrice {
+        font-weight: bold; 
+        color: #ffc107; 
+    }
+    .productInfo .productQuantity {
+        font-style: italic; 
+        color: #00ffff;
+    }
+    .buyBtn, .buyProtectionBtn, .buyPointsBoostBtn, .buyAntibioticBtn, .buySuperSpeedBtn {
+      padding: 10px 20px; 
+      background: linear-gradient(145deg, #00dd00, #00aa00); 
+      border: 2px solid #00cc00;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+      font-size: 16px;
+      width: 70%; 
+      max-width: 200px;
+      margin-top: 10px; 
+      box-shadow: 0 0 8px #00cc00;
+    }
+    .buyBtn:hover, .buyProtectionBtn:hover, .buyPointsBoostBtn:hover, .buyAntibioticBtn:hover, .buySuperSpeedBtn:hover {
+        background: linear-gradient(145deg, #00ff00, #00bb00);
+        transform: scale(1.03);
+    }
+    .buyBtn:active, .buyProtectionBtn:active, .buyPointsBoostBtn:active, .buyAntibioticBtn:active, .buySuperSpeedBtn:active { transform: scale(1.05); }
+
+
+    #aboutUsOverlay, #contactUsOverlay {
+      padding-top: 80px; 
+    }
+    #aboutUsTitle, #contactUsTitle {
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 26px;
+        text-shadow: 0 0 10px #0ff;
+    }
+    #settingsOverlay button {
+        font-family: 'Orbitron', sans-serif;
+        background: linear-gradient(145deg, #3a4a60, #1e2a3f); /* <--- لون جديد */
+        color: #00e0e0; /* <--- لون جديد */
+        border: 2px solid #00e0e0; /* <--- لون جديد */
+        border-radius: 8px; /* <--- تعديل */
+        padding: 12px 25px; /* <--- تعديل */
+        font-size: 17px; /* <--- تعديل */
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        margin-bottom: 10px; /* <--- تعديل */
+        z-index: 1;
+        box-shadow: 0 0 10px #00e0e0,
+                    0 0 20px rgba(0, 224, 224, 0.3),
+                    inset 0 0 5px rgba(0, 224, 224, 0.2);
+        transform: skewX(-8deg); /* <--- تأثير مائل */
+        display: flex; /* <--- لترتيب الأيقونة والنص */
+        align-items: center;
+        justify-content: center;
+        width: 85%; /* <--- تعديل */
+        max-width: 320px; /* <--- تعديل */
+        position: relative;
+    }
+
+    #settingsOverlay button > * { /* <--- لإعادة النص والأيقونة للشكل المستقيم */
+        transform: skewX(8deg);
+        display: inline-flex;
+        align-items: center;
+    }
+
+    #settingsOverlay button img { /* <--- تصميم الأيقونة */
+        margin-right: 15px; /* <--- مسافة بين الأيقونة والنص */
+        width: 20px;
+        height: 20px;
+        filter: drop-shadow(0 0 3px #fff);
+    }
+
+    #settingsOverlay button:hover,
+    #settingsOverlay button:focus {
+        background: linear-gradient(145deg, #445870, #36495f); /* <--- لون جديد */
+        color: #ffffff;
+        border-color: #ffffff;
+        box-shadow: 0 0 16px #00e0e0,
+                    0 0 30px rgba(0, 224, 224, 0.5),
+                    0 0 6px #ffffff,
+                    inset 0 0 7px rgba(0, 224, 224, 0.3);
+        transform: skewX(-8deg) scale(1.06); /* <--- تعديل */
+        outline: none;
+    }
+
+    #settingsOverlay button:active {
+        transform: skewX(-8deg) scale(1.01); /* <--- تعديل */
+        background: linear-gradient(145deg, #1e2a3f, #283748); /* <--- لون جديد */
+        box-shadow: 0 0 8px #00e0e0, inset 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    /* --- الحفاظ على تصميم الأزرار الأخرى كما هو (أو تعديله إذا أردت) --- */
+    #aboutUsOverlay button, #contactUsOverlay button, #storeOverlay button:not([class^="buy"]) {
+      padding: 8px 18px;
+      font-size: 18px;
+      border: 2px solid #ff69b4;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background 0.3s, transform 0.3s;
+      box-shadow: 0 0 10px #ff69b4;
+      width: 80%;
+      max-width: 300px;
+    }
+     #aboutUsOverlay button:hover, #contactUsOverlay button:hover, #storeOverlay button:not([class^="buy"]):hover {
+        background: rgba(255,105,180,0.8);
+        transform: scale(1.05);
+     }
+
+    #aboutUsContent {
+        font-size: 16px;
+        line-height: 1.6;
+        text-align: center;
+        width: 90%;
+        max-width: 500px;
+    }
+    #aboutUsContent h3 {
+       font-size: 20px;
+       color: #ff69b4;
+       margin-top: 15px;
+       margin-bottom: 5px;
+    }
+    #contactUsOverlay { justify-content: flex-start; }
+    #contactIntro {
+        font-size: 18px;
+        margin-bottom: 15px;
+        text-align: center;
+        width: 90%;
+        max-width: 500px;
+    }
+    #contactMessage, #contactEmail {
+        width: 90%;
+        max-width: 500px;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 2px solid #0ff;
+        background: rgba(0, 255, 255, 0.1);
+        color: #fff;
+        font-family: inherit;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    #contactMessage {
+        height: 120px;
+        resize: none;
+    }
+    #contactEmail { display: none; }
+    #sendContactBtn {
+        display: none;
+        background: linear-gradient(145deg, #00cc00, #009900);
+        border-color: #00cc00;
+        box-shadow: 0 0 10px #00cc00;
+    }
+     #sendContactBtn:hover {
+         background: rgba(0,204,0,0.8);
+     }
+    #contactConfirmationPopup {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 200, 0, 0.8);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 1002;
+        display: none;
+        box-shadow: 0 0 10px rgba(0, 200, 0, 0.5);
+        text-align: center;
+    }
+    #privacyPolicyPopup {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        padding: 20px;
+        box-sizing: border-box;
+        color: #fff;
+    }
+    #privacyPolicyContent {
+        background: rgba(0, 255, 255, 0.05);
+        border: 2px solid #0ff;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 90%;
+        max-height: 70%;
+        overflow-y: auto;
+        text-align: right;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+     #privacyPolicyContent h2 {
+         text-align: center;
+         color: #0ff;
+         margin-top: 0;
+         font-size: 20px;
+     }
+     #privacyPolicyContent h3 {
+         color: #ff69b4;
+         font-size: 16px;
+         margin-top: 15px;
+         margin-bottom: 5px;
+     }
+    #agreePrivacyBtn {
+        margin-top: 20px;
+        padding: 10px 25px;
+        font-size: 18px;
+        border: 2px solid #00ff00;
+        background: linear-gradient(145deg, #00cc00, #009900);
+        color: #fff;
+        cursor: pointer;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #00ff00;
+        transition: background 0.3s, transform 0.3s;
+    }
+    #agreePrivacyBtn:hover {
+      background: rgba(0,204,0,0.8);
+      transform: scale(1.05);
+    }
+    #waitingOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center;
+      z-index: 12;
+      color: #0ff;
+      box-sizing: border-box;
+    }
+    #waitingScreenGameTitle {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 36px; 
+        font-weight: 700; 
+        color: #fff;
+        text-shadow: 0 0 8px #fff, 0 0 15px #0ff, 0 0 20px #0ff; 
+        letter-spacing: 1.5px;
+        text-align: center;
+        line-height: 1.2;
+        margin-bottom: 25px; 
+    }
+    .progress-container {
+      width: 60%;
+      height: 12px;
+      border: 2px solid #0ff;
+      border-radius: 5px;
+      overflow: hidden;
+      background: rgba(0,255,255,0.1);
+      margin-bottom: 15px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #0ff;
+      animation: progressFill 5s linear forwards;
+    }
+    @keyframes progressFill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+    #gameOverOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #000, #222);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #0ff;
+      font-size: 32px;
+      z-index: 10;
+    }
+    #gameOverOverlay .achievements {
+      margin-top: 20px;
+      font-size: 24px;
+      text-align: center;
+    }
+    #featuredScore { 
+      margin-top: 10px;
+      font-size: 28px;
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0ff;
+    }
+    #playerRank { 
+      margin-top: 10px;
+      font-size: 18px; 
+      font-weight: bold;
+      padding: 8px 16px;
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0ff;
+    }
+    #restartBtn {
+      padding: 12px 30px;
+      font-size: 24px;
+      border: 2px solid #ff69b4;
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      margin-top: 20px;
+      box-shadow: 0 0 10px #ff69b4;
+    }
+    #restartBtn:hover {
+      background: rgba(255,105,180,0.8);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff69b4;
+    }
+    #unsupportedOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      color: #fff;
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      flex-direction: column;
+    }
+    #resumeOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #0ff;
+      font-size: 28px;
+      z-index: 13;
+    }
+    #resumeOverlay .resume-message {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    #resumeOverlay button {
+        padding: 12px 30px;
+        font-size: 24px;
+        border: 2px solid #00ff00;
+        background: linear-gradient(145deg, #00cc00, #009900);
+        color: #fff;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 0 10px #00ff00;
+    }
+     #resumeOverlay button:hover {
+      background: rgba(0,204,0,0.8);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00ff00;
+    }
+
+    /* General Popup Styling */
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: none; /* Initially hidden */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20; 
+      padding: 15px;
+      box-sizing: border-box;
+      color: #0ff;
+    }
+
+    .popup-content {
+      background: rgba(10, 20, 40, 0.95);
+      border: 2px solid #0ffff0;
+      border-radius: 15px;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 25px #0ffff0, inset 0 0 15px rgba(0, 255, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .popup-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .popup-main-title {
+      font-size: 24px;
+      color: #fff;
+      text-shadow: 0 0 8px #0ff;
+      margin: 0;
+      text-align: center;
+      flex-grow: 1; /* Allow title to take space */
+    }
+
+    .popup-back-btn {
+      background: linear-gradient(145deg, #ff69b4, #ff1493);
+      color: #fff;
+      border: 1px solid #ff69b4;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 8px #ff69b4;
+      flex-shrink: 0; /* Prevent shrinking */
+    }
+    .popup-back-btn:hover {
+      background: rgba(255,105,180,0.8);
+    }
+
+
+    /* Achievements Screen New Elements */
+    .nitro-style-button { 
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(145deg, #2c3e50, #1a253c);
+      color: #0ffff0;
+      border: 2px solid #0ffff0;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 0 10px #0ffff0, 0 0 20px rgba(0, 255, 255, 0.3);
+      transform: skewX(-8deg);
+      margin-bottom: 10px;
+      display: inline-block; /* Or flex if content inside needs aligning */
+    }
+    .nitro-style-button > * {
+      display: inline-block; /* Ensure content inside also skews back if needed */
+      transform: skewX(8deg);
+    }
+    .nitro-style-button:hover {
+      background: linear-gradient(145deg, #34495e, #2c3e50);
+      color: #ffffff;
+      border-color: #ffffff;
+      box-shadow: 0 0 15px #0ffff0, 0 0 30px rgba(0, 255, 255, 0.5), 0 0 5px #ffffff;
+      transform: skewX(-8deg) scale(1.05);
+    }
+    .achievements-main-button {
+        width: 80%;
+        max-width: 300px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        padding: 12px 25px;
+        font-size: 18px;
+    }
+
+    .achievement-info-box {
+      background: rgba(0,255,255,0.1);
+      border: 1px solid #0ff;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 17px;
+      color: #0ff;
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      margin-bottom: 12px;
+      box-shadow: 0 0 8px rgba(0,255,255,0.2);
+    }
+    .achievement-info-box h3 {
+        font-size: 18px;
+        color: #fff;
+        margin-top: 0;
+        margin-bottom: 8px;
+        text-shadow: 0 0 5px #0ff;
+    }
+
+    .rank-levels-box ul, .previous-ranks-box ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 120px; 
+        overflow-y: auto;
+        border: 1px solid rgba(0,255,255,0.1);
+        border-radius: 4px;
+    }
+    .rank-levels-box li, .previous-ranks-box li {
+        background: rgba(0,255,255,0.05);
+        margin: 4px;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(0,255,255,0.1);
+    }
+    .rank-levels-box li:last-child, .previous-ranks-box li:last-child {
+        border-bottom: none;
+    }
+    .previous-ranks-box {
+        margin-top: 15px; 
+    }
+
+
+    /* "My Achievements" Popup */
+    .achievements-popup-content {
+        gap: 10px;
+    }
+    .popup-profile-btn { /* For the "My Profile" button inside this popup */
+        padding: 8px 15px;
+        font-size: 14px;
+        margin: 0; /* Reset margin if conflicting */
+    }
+    #popupProfileImageContainer {
+      width: 100px; /* Adjusted size */
+      height: 100px; /* Adjusted size */
+      border-radius: 50%;
+      border: 3px solid #0ffff0;
+      overflow: hidden;
+      box-shadow: 0 0 15px #0ffff0;
+      margin-top: 10px; /* Spacing from header */
+      margin-bottom: 10px; 
+      background-color: rgba(0,0,0,0.2); /* Placeholder bg */
+    }
+    #popupProfileImage {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .popup-player-info {
+      font-size: 16px; /* Adjusted size */
+      color: #fff;
+      text-align: center;
+      margin-bottom: 5px;
+      width: 100%;
+    }
+    .popup-player-info strong {
+        color: #0ffff0;
+    }
+    .screenshot-btn {
+        width: 70%;
+        max-width: 250px;
+        margin-top: 15px;
+        padding: 10px 20px; /* Ensure padding is consistent */
+        font-size: 16px;
+    }
+
+    /* "Edit Profile" Popup */
+    .edit-profile-popup-content {
+        gap: 18px;
+    }
+    .profile-form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+    }
+    #editPlayerNameInput {
+      width: 80%;
+      max-width: 300px;
+      padding: 12px;
+      border-radius: 6px;
+      border: 2px solid #0ff;
+      background: rgba(0, 255, 255, 0.1);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    #editPlayerNameInput::placeholder {
+        color: rgba(200,200,200,0.7);
+    }
+    #profilePicPreview {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+      border: 2px dashed #0ff;
+      object-fit: cover;
+      background-color: rgba(0,0,0,0.3);
+    }
+    .popup-footer {
+        width: 100%;
+        display: flex;
+        justify-content: space-around; /* Or space-between */
+        align-items: center;
+        margin-top: 10px;
+    }
+    .popup-footer .nitro-style-button {
+        width: auto; /* Let padding and content define width */
+        min-width: 120px; /* Ensure a minimum size */
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    .cancel-btn {
+        background: linear-gradient(145deg, #555, #333);
+        border-color: #777;
+        color: #ccc;
+    }
+    .cancel-btn:hover {
+        background: linear-gradient(145deg, #666, #444);
+        border-color: #888;
+        color: #fff;
+    }
+    /* === تعديل زر الرجوع الخاص بشاشة الإعدادات === */
+#settingsOverlay .backBtn {
+  position: absolute;
+  top: 15px; /* <--- رفعه للأعلى */
+  left: 280px; /* <--- وضعه في اليسار (سيتم عكسه تلقائياً في العربية) */
+  right: auto; /* <--- إلغاء تحديد اليمين */
+  padding: 6px 12px; /* <--- تصغير الحجم */
+  font-size: 16px; /* <--- تصغير الخط */
+  width: auto; /* <--- إلغاء العرض الثابت */
+  max-width: none; /* <--- إلغاء الحد الأقصى للعرض */
+  transform: none; /* <--- إلغاء الميلان (إذا كان مطبقاً) */
+  z-index: 20; /* <--- ضمان ظهوره فوق العناصر الأخرى */
+  background: linear-gradient(145deg, #F85AAEFF, #004d4d);/* <--- لون مشابه لزر الإنجازات */
+  border: 2px solid #888; /* <--- إطار مشابه */
+  box-shadow: 0 0 8px #888; /* <--- ظل مشابه */
+  display: inline-block; /* <--- تعديل العرض */
+  text-align: center;
+}
+
+#settingsOverlay .backBtn:hover {
+  background: linear-gradient(145deg, #555, #333);
+  border-color: #aaa;
+  box-shadow: 0 0 12px #aaa;
+  transform: scale(1.05); /* <--- تكبير بسيط عند المرور */
+}
+  </style>
+</head>
+<body>
+  <div id="initialLoadingOverlay">
+    <div id="loadingGameTitleContainer">
+        <div id="loadingGameTitle">NITRO<br>FIRE</div>
+    </div>
+    <div id="initialLoadingProgressContainer">
+      <div id="initialLoadingProgressBar"></div>
+    </div>
+    <p id="initialLoadingText">بواسطة ألعاب عزيز by AZIZ GAMES</p>
+  </div>
+  <div id="unsupportedOverlay">
+    <p>هذه اللعبة مدعومة فقط على الأجهزة المحمولة وبالوضع العمودي.<br>يرجى استخدام هاتفك أو تحويل الشاشة إلى الوضع العمودي.</p>
+  </div>
+<div id="speedometer">السرعة: 8 م/ث</div>
+<div id="scoreBoard">النقاط: 0</div>
+<div id="distanceBoard">المسافة: 0</div>
+<div id="coinCounter">العملات: 0</div>
+
+<div id="hudProgressBarsContainer">
+    <div id="shieldMeter" class="hud-progress-bar">
+        <span class="hud-progress-icon">🛡️</span> 
+        <div class="progress-fill"></div>
+    </div>
+    <div id="magnetMeter" class="hud-progress-bar">
+        <span class="hud-progress-icon">🧲</span> 
+        <div class="progress-fill"></div>
+    </div>
+    <div id="protectionMeter" class="hud-progress-bar">
+        <span class="hud-progress-icon">💠</span> <div class="progress-fill"></div>
+    </div>
+</div>
+<button id="shieldBtn">🛡️</button> <button id="superSpeedBtn">🚀</button> 
+<canvas id="gameCanvas"></canvas>
+
+  <button id="leftBtn" class="control-btn">←</button>
+  <button id="rightBtn" class="control-btn">→</button>
+
+  <div id="startOverlay">
+    <div id="startScreenGameTitleContainer">
+        <div id="startScreenGameTitleEnglish">NITRO FIRE</div>
+        <div id="startScreenGameTitleArabic">نايترو فاير</div>
+    </div>
+    <div id="startMessage">اضغط "ابدأ اللعب" للانطلاق</div>
+    <button id="startBtn">ابدأ اللعب</button>
+    <button id="settingsBtn"><img id="settingsBtnIcon" src="" alt="Settings Icon"> <span id="settingsBtnText"></span></button>
+    <button id="achievementsBtn"><img id="achievementsBtnIcon" src="" alt="Achievements Icon"> <span id="achievementsBtnText"></span></button>
+    <button id="storeBtn"><img id="storeBtnIcon" src="" alt="Store Icon"> <span id="storeBtnText"></span></button>
+    <div id="startFooter">
+        <a id="privacyPolicyLink">سياسة الخصوصية</a> |
+        <a id="aboutUsLink">من نحن</a> |
+        <a id="contactUsLink">تواصل معنا</a>
+    </div>
+    <div id="startScreenCoinCounter">
+      <span class="start-coin-icon">🪙</span>
+      <span id="startScreenCoinAmount">0</span>
+    </div>
+    <div id="startScreenPointsCounter">
+      <span class="start-points-icon">⭐</span>
+      <span id="startScreenPointsAmount">0</span>
+    </div>    
+  </div>
+  <div id="settingsOverlay">
+    <button class="backBtn" id="backSettingsBtn"></button>
+    <h2 id="settingsTitle">الإعدادات</h2>
+    <button id="soundToggleBtn">
+        <img id="soundIcon" src="" alt="Sound">
+        <span id="soundText"></span>
+    </button>
+    <button id="controlMethodBtn">
+        <img id="controlIcon" src="" alt="Control">
+        <span id="controlText"></span>
+    </button>
+    <button id="langToggleBtn">
+        <img id="langIcon" src="" alt="Language">
+        <span id="langText"></span>
+    </button>
+  </div>
+
+  <div id="achievementsOverlay">
+    <button class="backBtn" id="backAchievementsBtn"></button>
+    <h2 id="achievementsTitle">الإنجازات</h2>
+
+    <button id="myAchievementsBtn" class="nitro-style-button achievements-main-button"></button>
+
+    <div id="achievementsScoreDisplay" class="achievement-info-box"></div>
+    <div id="achievementsDistanceDisplay" class="achievement-info-box"></div>
+    
+    <div id="currentRankDisplay" class="achievement-info-box rank-levels-box">
+        <h3 id="currentRankDisplayTitle"></h3>
+        <ul id="currentRankLevelsList"></ul>
+    </div>
+    <div id="previousRanksDisplay" class="achievement-info-box previous-ranks-box">
+        <h3 id="previousRanksDisplayTitle"></h3>
+        <ul id="previousRanksList"></ul>
+    </div>
+  </div>
+
+<div id="myAchievementsPopup" class="popup-overlay">
+    <div class="popup-content achievements-popup-content">
+        <div class="popup-header">
+            <button id="myProfileBtn" class="nitro-style-button popup-profile-btn"></button>
+            <span class="popup-main-title" id="myAchievementsPopupTitle"></span> <button id="backToAchievementsBtn" class="popup-back-btn">⬅</button>
+        </div>
+        <div id="popupProfileImageContainer">
+            <img id="popupProfileImage" src="https://via.placeholder.com/100?text=Profile" alt="Profile Image">
+        </div>
+        <div id="popupPlayerName" class="popup-player-info"></div>
+        <div id="popupPlayerRank" class="popup-player-info"></div>
+        <div id="popupPlayerScore" class="popup-player-info"></div>
+        <div id="popupPlayerDistance" class="popup-player-info"></div>
+        <div class="popup-footer">
+            <button id="takeAchievementsScreenshotBtn" class="nitro-style-button screenshot-btn"></button>
+        </div>
+    </div>
+</div>
+
+<div id="editProfilePopup" class="popup-overlay">
+    <div class="popup-content edit-profile-popup-content">
+        <div class="popup-header">
+            <h2 id="editProfileTitle" class="popup-main-title"></h2>
+        </div>
+        <div class="profile-form-container">
+            <input type="text" id="editPlayerNameInput" placeholder="أدخل اسمك">
+            <button id="changeProfilePicBtn" class="nitro-style-button"></button>
+            <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+            <img id="profilePicPreview" src="https://via.placeholder.com/100?text=Preview" alt="Profile Preview">
+        </div>
+        <div class="popup-footer">
+            <button id="saveProfileBtn" class="nitro-style-button"></button>
+            <button id="cancelEditProfileBtn" class="nitro-style-button cancel-btn"></button>
+        </div>
+    </div>
+</div>
+
+
+  <div id="storeOverlay">
+    <div id="storeHeader">
+        <button class="backBtn" id="backStoreBtn"></button> <h2 id="storeTitle">المتجر</h2>
+        <div id="storeCoinCounter">رصيد العملات: 0</div>
+    </div>
+    <div id="storeProducts">
+      <div class="productCard">
+        <img src="https://via.placeholder.com/60" alt="Magnet" class="productImage">
+        <div class="productInfo">
+          <h3 class="productName"></h3>
+          <p class="productDesc"></p>
+          <p class="productPrice"></p>
+          <p class="productQuantity"></p>
+          <button class="buyBtn" id="buyMagnetBtn"></button>
+        </div>
+      </div>
+      <div class="productCard">
+        <img src="https://via.placeholder.com/60" alt="Protection" class="productImage">
+        <div class="productInfo">
+          <h3 class="protectionProductName"></h3>
+          <p class="protectionProductDesc"></p>
+          <p class="protectionProductPrice"></p>
+          <p class="protectionProductQuantity"></p>
+          <button class="buyProtectionBtn" id="buyProtectionBtn"></button>
+        </div>
+      </div>
+      <div class="productCard">
+        <img src="https://via.placeholder.com/60" alt="Points Boost" class="productImage">
+        <div class="productInfo">
+          <h3 class="pointsBoostProductName"></h3>
+          <p class="pointsBoostProductDesc"></p>
+          <p class="pointsBoostProductPrice"></p>
+          <p class="pointsBoostProductQuantity"></p>
+          <button class="buyPointsBoostBtn" id="buyPointsBoostBtn"></button>
+        </div>
+      </div>
+       <div class="productCard">
+         <img src="https://via.placeholder.com/60" alt="Antibiotic" class="productImage">
+         <div class="productInfo">
+           <h3 class="antibioticProductName"></h3>
+           <p class="antibioticProductDesc"></p>
+           <p class="antibioticProductPrice"></p>
+           <p class="antibioticProductQuantity"></p>
+           <button class="buyAntibioticBtn" id="buyAntibioticBtn"></button>
+         </div>
+       </div>
+        <div class="productCard">
+         <img src="https://via.placeholder.com/60" alt="Super Speed" class="productImage">
+         <div class="productInfo">
+           <h3 class="superSpeedProductName"></h3>
+           <p class="superSpeedProductDesc"></p>
+           <p class="superSpeedProductPrice"></p>
+           <p class="superSpeedProductQuantity"></p>
+           <button class="buySuperSpeedBtn" id="buySuperSpeedBtn"></button>
+         </div>
+       </div>
+    </div>
+  </div>
+
+  <div id="aboutUsOverlay">
+      <button class="backBtn" id="backAboutUsBtn"></button>
+      <h2 id="aboutUsTitle">من نحن</h2>
+      <div id="aboutUsContent">
+          مرحبًا بك في ألعاب عزيز!<br><br>
+          نحن شركة ناشئة متخصصة في نشر وتوزيع الألعاب، مملوكة للمصمم والمطور عبدالعزيز عبدالله مسعد الشرجي. نهدف إلى تقديم تجارب ألعاب ممتعة ومثيرة للمستخدمين.<br><br>
+          <h3>مهمتنا:</h3>
+          - تقديم ألعاب عالية الجودة.<br>
+          - تحسين تجربة المستخدم.<br>
+          - الاستماع إلى ملاحظات المستخدمين.<br><br>
+          <h3>عن المالك:</h3>
+          - عبدالعزيز عبدالله مسعد الشرجي: مطور ومصمم ألعاب، منشئ محتوى رقمي، ومصمم جرافيكي.<br><br>
+          <h3>موقعنا:</h3>
+          - شمال غرب قعطبة - محافظة الضالع - الجمهورية اليمنية.<br><br>
+          شكرًا لاهتمامك بألعاب عزيز!
+      </div>
+  </div>
+
+  <div id="contactUsOverlay">
+      <button class="backBtn" id="backContactUsBtn"></button>
+      <h2 id="contactUsTitle">تواصل معنا</h2>
+      <p id="contactIntro">مرحبًا بك! إذا كان لديك أي استفسارات أو ملاحظات حول لعبتنا نايترو فاير، يرجى ملء النموذج أدناه:</p>
+      <textarea id="contactMessage" placeholder="اكتب رسالتك هنا..."></textarea>
+      <input type="email" id="contactEmail" placeholder="أدخل بريدك الإلكتروني...">
+      <button id="sendContactBtn">إرسال</button>
+  </div>
+
+  <div id="privacyPolicyPopup">
+      <div id="privacyPolicyContent">
+          <h2 id="privacyTitle">سياسة الخصوصية</h2>
+          <h3 id="privacyIntroTitle">مقدمة</h3>
+          <p id="privacyIntroText">نحن العاب عزيز نهتم بخصوصية مستخدمينا. هذه السياسة توضح كيفية جمع واستخدام وحماية بياناتك في لعبتنا نايترو فاير.</p>
+          <h3 id="privacyDataTitle">البيانات التي نجمعها</h3>
+          <p id="privacyDataText">
+              - البريد الإلكتروني: عند استخدام خاصية "تواصل معنا" لإرسال رسائل إلى المطور.<br>
+              - رسائل المستخدم: الرسائل التي ترسلها إلى المطور من خلال خاصية "تواصل معنا".<br>
+              - سجل اللاعب: جمع بيانات اللاعبين في قائمة الصدارة في اللعب الجماعي
+          </p>
+          <h3 id="privacyUsageTitle">استخدام البيانات</h3>
+          <p id="privacyUsageText">
+              - الرد على استفساراتك: استخدام بياناتك للرد على رسائلك.<br>
+              - تحسين تجربة المستخدم: استخدام بياناتك لتحسين تجربة المستخدم في اللعبة.
+          </p>
+          <h3 id="privacyProtectionTitle">حماية البيانات</h3>
+          <p id="privacyProtectionText">
+              - التشفير: حماية بياناتك من الوصول غير المصرح به.<br>
+              - التخزين الآمن: تخزين بياناتك في خوادم آمنة.
+          </p>
+          <h3 id="privacySharingTitle">مشاركة البيانات</h3>
+          <p id="privacySharingText">- لا يتم مشاركة بياناتك: مع أي طرف ثالث بدون موافقتك.</p>
+          <h3 id="privacyRightsTitle">حقوق المستخدمين</h3>
+          <p id="privacyRightsText">
+              - الوصول إلى البيانات: طلب نسخة من بياناتك.<br>
+              - حذف البيانات: طلب حذف بياناتك.
+          </p>
+          <h3 id="privacyUpdatesTitle">التحديثات</h3>
+          <p id="privacyUpdatesText">- نقوم بتحديث سياسة الخصوصية: بشكل دوري.</p>
+          <p id="privacyConsentText">باستخدام لعبتنا، فإنك توافق على سياسة الخصوصية هذه.</p>
+      </div>
+      <button id="agreePrivacyBtn">موافق</button>
+  </div>
+
+  <div id="contactConfirmationPopup">سنكون سعداء بالرد على استفساراتك وسماع ملاحظاتك!</div>
+
+  <div id="waitingOverlay">
+    <div id="waitingScreenGameTitle">NITRO FIRE</div>
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+    </div>
+    </div>
+
+  <div id="gameOverOverlay">
+    <div id="gameOverMessage">انتهت اللعبة!</div>
+    <div id="featuredScore"></div>
+    <div class="achievements" id="achievementsText"></div>
+    <div id="playerRank"></div>
+    <button id="restartBtn">إعادة اللعب</button>
+  </div>
+
+  <div id="resumeOverlay">
+      <div class="resume-message">هل تريد استئناف اللعب باستخدام مضاد حيوي؟</div>
+      <button id="resumeGameBtn">استئناف اللعب</button>
+  </div>
+
+  <script>  
+  /* ===================== دوال توليد أيقونات الإعدادات ===================== */
+
+function generateSoundIcon(isOn = true) {
+  const cvs = document.createElement("canvas");
+  cvs.width = cvs.height = 24;
+  const ctxIcon = cvs.getContext("2d");
+  ctxIcon.clearRect(0, 0, 24, 24);
+  ctxIcon.strokeStyle = "#fff";
+  ctxIcon.lineWidth = 1.8;
+  ctxIcon.shadowColor = "#0ff";
+  ctxIcon.shadowBlur = 3;
+
+  // Base
+  ctxIcon.beginPath();
+  ctxIcon.moveTo(5, 9);
+  ctxIcon.lineTo(9, 9);
+  ctxIcon.lineTo(14, 4);
+  ctxIcon.lineTo(14, 20);
+  ctxIcon.lineTo(9, 15);
+  ctxIcon.lineTo(5, 15);
+  ctxIcon.closePath();
+  ctxIcon.stroke();
+
+  // Waves
+  if (isOn) {
+    ctxIcon.beginPath();
+    ctxIcon.arc(14, 12, 4, -Math.PI / 3, Math.PI / 3);
+    ctxIcon.stroke();
+    ctxIcon.beginPath();
+    ctxIcon.arc(14, 12, 7, -Math.PI / 4, Math.PI / 4);
+    ctxIcon.stroke();
+  } else {
+    // Slash
+    ctxIcon.strokeStyle = "#ff69b4"; // Pink for off
+    ctxIcon.shadowColor = "#ff69b4";
+    ctxIcon.lineWidth = 2.5;
+    ctxIcon.beginPath();
+    ctxIcon.moveTo(16, 6);
+    ctxIcon.lineTo(22, 18);
+    ctxIcon.stroke();
+  }
+  return cvs.toDataURL();
+}
+
+function generateControlIcon(isButtons = true) {
+  const cvs = document.createElement("canvas");
+  cvs.width = cvs.height = 24;
+  const ctxIcon = cvs.getContext("2d");
+  ctxIcon.clearRect(0, 0, 24, 24);
+  ctxIcon.strokeStyle = "#fff";
+  ctxIcon.lineWidth = 1.8;
+  ctxIcon.shadowColor = "#0ff";
+  ctxIcon.shadowBlur = 3;
+
+  if (isButtons) {
+    // Left Arrow
+    ctxIcon.beginPath();
+    ctxIcon.moveTo(10, 7);
+    ctxIcon.lineTo(4, 12);
+    ctxIcon.lineTo(10, 17);
+    ctxIcon.stroke();
+    // Right Arrow
+    ctxIcon.beginPath();
+    ctxIcon.moveTo(14, 7);
+    ctxIcon.lineTo(20, 12);
+    ctxIcon.lineTo(14, 17);
+    ctxIcon.stroke();
+  } else {
+    // Rotation (Phone-like with arrow)
+    ctxIcon.strokeRect(6, 4, 12, 16); // Phone body
+    ctxIcon.beginPath();
+    ctxIcon.arc(12, 12, 5, Math.PI * 0.8, Math.PI * 0.2, true); // Arc
+    ctxIcon.moveTo(7, 12); // Arrow head
+    ctxIcon.lineTo(7, 9);
+    ctxIcon.moveTo(7, 12);
+    ctxIcon.lineTo(10, 12);
+    ctxIcon.stroke();
+  }
+  return cvs.toDataURL();
+}
+
+function generateLanguageIcon() {
+  const cvs = document.createElement("canvas");
+  cvs.width = cvs.height = 24;
+  const ctxIcon = cvs.getContext("2d");
+  ctxIcon.clearRect(0, 0, 24, 24);
+  ctxIcon.strokeStyle = "#fff";
+  ctxIcon.lineWidth = 1.8;
+  ctxIcon.shadowColor = "#0ff";
+  ctxIcon.shadowBlur = 3;
+
+  // Globe
+  ctxIcon.beginPath();
+  ctxIcon.arc(12, 12, 9, 0, Math.PI * 2);
+  ctxIcon.stroke();
+  // Lines
+  ctxIcon.beginPath();
+  ctxIcon.moveTo(3, 12);
+  ctxIcon.lineTo(21, 12);
+  ctxIcon.moveTo(12, 3);
+  ctxIcon.lineTo(12, 21);
+  ctxIcon.moveTo(5, 6);
+  ctxIcon.lineTo(19, 18);
+  ctxIcon.moveTo(5, 18);
+  ctxIcon.lineTo(19, 6);
+  ctxIcon.stroke();
+
+  // 'A' / 'ع' (Simplified)
+  ctxIcon.fillStyle = "#fff";
+  ctxIcon.font = "bold 9px Orbitron";
+  ctxIcon.textAlign = "center";
+  ctxIcon.textBaseline = "middle";
+  ctxIcon.fillText(currentLanguage === 'ar' ? 'E' : 'ع', 12, 12);
+
+  return cvs.toDataURL();
+}	
+    /* ===================== دوال توليد الأيقونات برمجياً ===================== */
+    function generateSettingsIcon() {
+      const cvs = document.createElement("canvas");
+      cvs.width = cvs.height = 24;
+      const ctxIcon = cvs.getContext("2d");
+      ctxIcon.clearRect(0,0,24,24);
+      ctxIcon.strokeStyle = "#fff";
+      ctxIcon.lineWidth = 1.5;
+      ctxIcon.beginPath();
+      ctxIcon.arc(12,12,4,0,Math.PI*2);
+      ctxIcon.stroke();
+      for(let i=0;i<8;i++){
+        const angle = i*(Math.PI/4);
+        const x1 = 12 + Math.cos(angle)*6;
+        const y1 = 12 + Math.sin(angle)*6;
+        const x2 = 12 + Math.cos(angle)*9;
+        const y2 = 12 + Math.sin(angle)*9;
+        ctxIcon.beginPath();
+        ctxIcon.moveTo(x1,y1);
+        ctxIcon.lineTo(x2,y2);
+        ctxIcon.stroke();
+      }
+      return cvs.toDataURL();
+    }
+    function generateAchievementsIcon() {
+      const cvs = document.createElement("canvas");
+      cvs.width = cvs.height = 24;
+      const ctxIcon = cvs.getContext("2d");
+      ctxIcon.clearRect(0,0,24,24);
+      ctxIcon.fillStyle = "#fff";
+      ctxIcon.beginPath();
+      ctxIcon.moveTo(7,10);
+      ctxIcon.lineTo(17,10);
+      ctxIcon.quadraticCurveTo(18,10,18,11);
+      ctxIcon.lineTo(18,14);
+      ctxIcon.quadraticCurveTo(18,15,17,15);
+      ctxIcon.lineTo(7,15);
+      ctxIcon.quadraticCurveTo(6,15,6,14);
+      ctxIcon.lineTo(6,11);
+      ctxIcon.quadraticCurveTo(6,10,7,10);
+      ctxIcon.fill();
+      ctxIcon.beginPath();
+      ctxIcon.moveTo(12,15);
+      ctxIcon.lineTo(12,19);
+      ctxIcon.strokeStyle = "#fff";
+      ctxIcon.lineWidth = 1.5;
+      ctxIcon.stroke();
+      return cvs.toDataURL();
+    }
+    function generateStoreIcon() {
+      const cvs = document.createElement("canvas");
+      cvs.width = cvs.height = 24;
+      const ctxIcon = cvs.getContext("2d");
+      ctxIcon.clearRect(0,0,24,24);
+      ctxIcon.strokeStyle = "#fff";
+      ctxIcon.lineWidth = 1.5;
+      ctxIcon.beginPath();
+      ctxIcon.moveTo(7, 10);
+      ctxIcon.lineTo(17, 10);
+      ctxIcon.lineTo(17, 17);
+      ctxIcon.lineTo(7, 17);
+      ctxIcon.closePath();
+      ctxIcon.stroke();
+      ctxIcon.beginPath();
+      ctxIcon.moveTo(9, 10);
+      ctxIcon.quadraticCurveTo(12, 6, 15, 10);
+      ctxIcon.stroke();
+      return cvs.toDataURL();
+    }
+
+    /* --------------------- المتغيرات الأساسية --------------------- */
+    const scaleFactor = 1.0;
+    const originalRoadWidth = 240;
+    const roadWidth = originalRoadWidth * scaleFactor;
+    let roadX = (window.innerWidth - roadWidth) / 2;
+    let lanes = [0, 0, 0];
+    function updateLanes() {
+      lanes[0] = roadX + roadWidth/6 - 20*scaleFactor;
+      lanes[1] = roadX + roadWidth/2 - 20*scaleFactor;
+      lanes[2] = roadX + (5*roadWidth)/6 - 20*scaleFactor;
+    }
+   /* ===================== دالة اختصار الأرقام ===================== */
+function formatNumber(num) {
+  num = parseInt(num, 10); // تأكد من أنه رقم صحيح
+  if (isNaN(num)) return "0"; // في حال كان غير رقمي
+
+  if (num < 10000) {
+    return num.toString();
+  } else if (num < 1000000) {
+    const base = Math.floor(num / 1000);
+    const remainder = Math.floor((num % 1000) / 100);
+    return remainder > 0 ? `${base},${remainder}k` : `${base}k`;
+  } else {
+    const baseM = Math.floor(num / 1000000);
+    const remainderM = Math.floor((num % 1000000) / 100000);
+    return remainderM > 0 ? `${baseM},${remainderM}M` : `${baseM}M`;
+  }
+} 
+    /* ---------------- إعدادات اللغة والتخزين المحلي ---------------- */
+    let currentLanguage = "ar", soundsEnabled = true, controlMethod = "buttons";
+    const translations = {
+      ar: {
+        startMessage: ' ',
+        startBtn: 'ابدأ اللعب',
+        restartBtn: 'إعادة اللعب',
+        gameOverMessage: 'انتهت اللعبة!',
+        score: 'النقاط: ',
+        distance: 'المسافة: ',
+        langBtn: 'English',
+        soundOn: 'الصوت: مفعل',
+        soundOff: 'الصوت: معطل',
+        coins: 'العملات: ',
+        controlButtons: 'التحكم بالأزرار',
+        controlRotation: 'التحكم بالتدوير',
+        rankNames: [
+            "متجول نيوني", "ساعي النيترو", "كشاف الفلاش", "حارس التيار", "صانع الأثير",
+            "رائد السرعة", "نجم البُعد", "قائد الإيقاع", "صدام الكوانتم", "أسطورة السيليكون",
+            "وميض نيوني", "بركان النيترو", "حامي النيون", "سائق الفيوجين", "حورس السرعة",
+            "نجم الإنفينيتي", "سليل الفلاش", "رائد التيربو", "حاكم التيار", "أسطورة النيوندوم",
+            "صقر النيترو", "سيد البازارد", "فارس الفيوجن", "شهاب السيليكون", "قائد الفلاش",
+            "حارس الكوانتم", "شبح السرعة", "صانع النيون", "نجم الإكسير", "أسطورة الفولتا",
+            "متسارع سيليكون", "ساعي الأثير", "حارس النيتروكس", "رائد النيون", "وميض الفلاش",
+            "سيد التيربو", "صقور السيليكون", "نجم البازيليوس", "صانع الانفجارات", "أسطورة الفيوجن",
+            "كشاف المتغير", "فارس النيوندوم", "حارس الإنفينيتي", "رائد الباز", "شبح الأثير",
+            "نجم السيليكون", "قائد الفيض", "صانع التيربو", "أسطورة الشعاع", "ساعي الفلاش",
+            "متجول النيوندوم", "فارس النيترو", "وميض السيليكون", "رائد الإندرجراوند", "حارس البازارد",
+            "كشاف البريق", "صقر الفيوجن", "نجم التيربو", "صانع البرق", "أسطورة الكوزموس",
+            "حامي النيون", "فارس الانفينيتي", "ساعي السيليكون", "نجم الأثير", "قائد الشعاع",
+            "صادم الفلاش", "وميض الباز", "أسطورة السيليكون", "رائد الكوانتم", "متجول التيربو",
+            "حارس الفيوجن", "فارس النيون", "صقر البريق", "نجم الشعاع", "صانع السرعة",
+            "قائد النيتروكس", "ساعي النيوندوم", "أسطورة الفلاش", "وميض الأثير", "نجم التيربوكس",
+            "حامي الباز", "رائد السيليكون", "صقر الكوزموس", "فارس الإنفينيتي", "ملك الفلاش",
+            "أسطورة الأثير", "سيد الوميض", "قائد النيوندوم", "نجم الكوانتم", "مجد النيترو",
+            "صانع الفيوجن", "فارس الشعاع", "وميض السيليكون", "رائد الانفينيتي", "حارس الفلاش",
+            "صقر النيون", "متجول البازارد", "ملك التيربو", "أسطورة الكوانتم", "أسطورة النيترو المطلقة"
+        ],
+        back: "رجوع",
+        settingsTitle: "الإعدادات",
+        achievementsTitle: "",
+        storeTitle: "المتجر",
+        storeCoinCounter: "رصيد العملات: ",
+        productMagnetName: "المغناطيس 🧲",
+        productMagnetDesc: "دفعة: 20 قطعة مغناطيس - السعر: 100 عملة",
+        productPrice: "السعر: ",
+        productQuantity: "الكمية: ",
+        buyButtonText: "شراء",
+        productProtectionName: "الحماية 🛡️",
+        productProtectionDesc: "دفعة: 10 قطع حماية - السعر: 50 عملة",
+        productProtectionPrice: "السعر: 50 عملة",
+        productProtectionQuantity: "الكمية: ",
+        productPointsBoostName: "تعزيز النقاط 🎯",
+        productPointsBoostDesc: "دفعة: 3 قطع تعزيز النقاط - السعر: 100 عملة",
+        productPointsBoostPrice: "السعر: 100 عملة",
+        productPointsBoostQuantity: "الكمية: ",
+        productAntibioticName: "مضاد حيوي 💉",
+        productAntibioticDesc: "دفعة: 3 قطع مضاد حيوي - السعر: 100 عملة",
+        productAntibioticPrice: "السعر: 100 عملة",
+        productAntibioticQuantity: "الكمية: ",
+        productSuperSpeedName: "تسريع فائق 🚀",
+        productSuperSpeedDesc: "دفعة: 5 قطع تسريع فائق - السعر: 100 عملة",
+        productSuperSpeedPrice: "السعر: 100 عملة",
+        productSuperSpeedQuantity: "الكمية: ",
+        startSettingsBtn: "الإعدادات",
+        startAchievementsBtn: "الإنجازات",
+        startStoreBtn: "المتجر",
+        resumeMessage: "هل تريد استئناف اللعب باستخدام مضاد حيوي؟",
+        resumeGameBtn: "استئناف اللعب",
+        privacyPolicyLink: "سياسة الخصوصية",
+        aboutUsLink: "من نحن",
+        contactUsLink: "تواصل معنا",
+        privacyTitle: "سياسة الخصوصية",
+        privacyIntroTitle: "مقدمة",
+        privacyIntroText: "نحن العاب عزيز نهتم بخصوصية مستخدمينا. هذه السياسة توضح كيفية جمع واستخدام وحماية بياناتك في لعبتنا نايترو فاير.",
+        privacyDataTitle: "البيانات التي نجمعها",
+        privacyDataText: `- البريد الإلكتروني: عند استخدام خاصية "تواصل معنا" لإرسال رسائل إلى المطور.<br>
+                          - رسائل المستخدم: الرسائل التي ترسلها إلى المطور من خلال خاصية "تواصل معنا".<br>
+                          - سجل اللاعب: جمع بيانات اللاعبين في قائمة الصدارة في اللعب الجماعي`,
+        privacyUsageTitle: "استخدام البيانات",
+        privacyUsageText: `- الرد على استفساراتك: استخدام بياناتك للرد على رسائلك.<br>
+                           - تحسين تجربة المستخدم: استخدام بياناتك لتحسين تجربة المستخدم في اللعبة.`,
+        privacyProtectionTitle: "حماية البيانات",
+        privacyProtectionText: `- التشفير: حماية بياناتك من الوصول غير المصرح به.<br>
+                              - التخزين الآمن: تخزين بياناتك في خوادم آمنة.`,
+        privacySharingTitle: "مشاركة البيانات",
+        privacySharingText: "- لا يتم مشاركة بياناتك: مع أي طرف ثالث بدون موافقتك.",
+        privacyRightsTitle: "حقوق المستخدمين",
+        privacyRightsText: `- الوصول إلى البيانات: طلب نسخة من بياناتك.<br>
+                            - حذف البيانات: طلب حذف بياناتك.`,
+        privacyUpdatesTitle: "التحديثات",
+        privacyUpdatesText: "- نقوم بتحديث سياسة الخصوصية: بشكل دوري.",
+        privacyConsentText: "باستخدام لعبتنا، فإنك توافق على سياسة الخصوصية هذه.",
+        agreePrivacyBtn: "موافق",
+        aboutUsTitle: "من نحن",
+        aboutUsContent_h: `مرحبًا بك في ألعاب عزيز!<br><br>
+                          نحن شركة ناشئة متخصصة في نشر وتوزيع الألعاب، مملوكة للمصمم والمطور عبدالعزيز عبدالله مسعد الشرجي. نهدف إلى تقديم تجارب ألعاب ممتعة ومثيرة للمستخدمين.<br><br>
+                          <h3>مهمتنا:</h3>
+                          - تقديم ألعاب عالية الجودة.<br>
+                          - تحسين تجربة المستخدم.<br>
+                          - الاستماع إلى ملاحظات المستخدمين.<br><br>
+                          <h3>عن المالك:</h3>
+                          - عبدالعزيز عبدالله مسعد الشرجي: مطور ومصمم ألعاب، منشئ محتوى رقمي، ومصمم جرافيكي.<br><br>
+                          <h3>موقعنا:</h3>
+                          - شمال غرب قعطبة - محافظة الضالع - الجمهورية اليمنية.<br><br>
+                          شكرًا لاهتمامك بألعاب عزيز!`,
+        contactUsTitle: "تواصل معنا",
+        contactIntro: "مرحبًا بك! إذا كان لديك أي استفسارات أو ملاحظات حول لعبتنا نايترو فاير، يرجى ملء النموذج أدناه:",
+        contactMessagePlaceholder: "اكتب رسالتك هنا...",
+        contactEmailPlaceholder: "أدخل بريدك الإلكتروني...",
+        sendContactBtn: "إرسال",
+        contactConfirmation: "سنكون سعداء بالرد على استفساراتك وسماع ملاحظاتك!",
+        myAchievementsBtn: "إنجازاتي",
+        myProfileBtn: "ملفي الشخصي",
+        editProfileTitle: "تعديل الملف الشخصي",
+        saveBtn: "حفظ",
+        cancelBtn: "إلغاء",
+        changeProfilePicBtn: "تغيير الصورة",
+        takeScreenshotBtn: "لقطة شاشة",
+        level: "المستوى",
+        currentRankDisplayTitle: "الرتبة الحالية والمستويات:",
+        previousRanksDisplayTitle: "الرتب المحققة سابقًا:",
+        achievementsScore: "النقاط: ",
+        achievementsDistance: "المسافة: ",
+        achievementsPlayerName: "الاسم: ",
+        achievementsPlayerRank: "الرتبة: "
+      },
+      en: {
+        startMessage: '',
+        startBtn: 'Start Game',
+        restartBtn: 'Restart',
+        gameOverMessage: 'Game Over!',
+        score: 'Score: ',
+        distance: 'Distance: ',
+        langBtn: 'العربية',
+        soundOn: 'Sound: On',
+        soundOff: 'Sound: Off',
+        coins: ' Coins: ',
+        controlButtons: 'Control: Buttons',
+        controlRotation: 'Control: Rotation',
+        rankNames: [
+            "Neon Wanderer", "Nitro Courier", "Flash Scout", "Current Guardian", "Aether Crafter",
+            "Speed Pioneer", "Dimension Star", "Rhythm Commander", "Quantum Clasher", "Silicon Legend",
+            "Neon Flicker", "Nitro Volcano", "Neon Protector", "Fusion Driver", "Horus of Speed",
+            "Infinity Star", "Flash Scion", "Turbo Pioneer", "Current Ruler", "Neondom Legend",
+            "Nitro Falcon", "Hazard Master", "Fusion Knight", "Silicon Meteor", "Flash Commander",
+            "Quantum Guardian", "Speed Phantom", "Neon Crafter", "Elixir Star", "Volta Legend",
+            "Silicon Accelerator", "Aether Courier", "Nitrox Guardian", "Neon Pioneer", "Flash Flicker",
+            "Turbo Master", "Silicon Hawks", "Basilius Star", "Blast Crafter", "Fusion Legend",
+            "Variable Scout", "Neondom Knight", "Infinity Guardian", "Buzz Pioneer", "Aether Phantom",
+            "Silicon Star", "Flux Commander", "Turbo Crafter", "Beam Legend", "Flash Courier",
+            "Neondom Wanderer", "Nitro Knight", "Silicon Flicker", "Underground Pioneer", "Hazard Guardian",
+            "Gleam Scout", "Fusion Falcon", "Turbo Star", "Lightning Crafter", "Cosmos Legend",
+            "Neon Protector II", "Infinity Knight", "Silicon Courier", "Aether Star", "Beam Commander",
+            "Flash Clasher", "Buzz Flicker", "Silicon Legend II", "Quantum Pioneer", "Turbo Wanderer",
+            "Fusion Guardian", "Neon Knight", "Gleam Falcon", "Beam Star", "Speed Crafter",
+            "Nitrox Commander", "Neondom Courier", "Flash Legend", "Aether Flicker", "Turbox Star",
+            "Buzz Protector", "Silicon Pioneer", "Cosmos Falcon", "Infinity Knight II", "Flash King",
+            "Aether Legend", "Flicker Master", "Neondom Commander", "Quantum Star", "Nitro Glory",
+            "Fusion Crafter", "Beam Knight", "Silicon Flicker II", "Infinity Pioneer", "Flash Guardian",
+            "Neon Falcon", "Hazard Wanderer", "Turbo King", "Quantum Legend", "Ultimate Nitro Legend"
+        ],
+        back: "Back",
+        settingsTitle: "Settings",
+        achievementsTitle: "",
+        storeTitle: "Store",
+        storeCoinCounter: "Coin Balance: ",
+        productMagnetName: "Magnet 🧲",
+        productMagnetDesc: "Batch: 20 magnet pieces - Price: 100 coins",
+        productPrice: "Price: ",
+        productQuantity: "Quantity: ",
+        buyButtonText: "Buy",
+        productProtectionName: "Protection 🛡️",
+        productProtectionDesc: "Batch: 10 protection pieces - Price: 50 coins",
+        productProtectionPrice: "Price: 50 coins",
+        productProtectionQuantity: "Quantity: ",
+        productPointsBoostName: "Points Boost 🎯",
+        productPointsBoostDesc: "Batch: 3 points boost pieces - Price: 100 coins",
+        productPointsBoostPrice: "Price: 100 coins",
+        productPointsBoostQuantity: "Quantity: ",
+        productAntibioticName: "Antibiotic 💉",
+        productAntibioticDesc: "Batch: 3 antibiotic pieces - Price: 100 coins",
+        productAntibioticPrice: "Price: 100 coins",
+        productAntibioticQuantity: "Quantity: ",
+        productSuperSpeedName: "Super Speed 🚀",
+        productSuperSpeedDesc: "Batch: 5 super speed pieces - Price: 100 coins",
+        productSuperSpeedPrice: "Price: 100 coins",
+        productSuperSpeedQuantity: "Quantity: ",
+        startSettingsBtn: "Settings",
+        startAchievementsBtn: "Achievements",
+        startStoreBtn: "Store",
+        resumeMessage: "Do you want to resume the game using an antibiotic?",
+        resumeGameBtn: "Resume Game",
+        privacyPolicyLink: "Privacy Policy",
+        aboutUsLink: "About Us",
+        contactUsLink: "Contact Us",
+        privacyTitle: "Privacy Policy",
+        privacyIntroTitle: "Introduction",
+        privacyIntroText: "We at Aziz Games care about the privacy of our users. This policy explains how we collect, use, and protect your data in our game NITRO FIRE.",
+        privacyDataTitle: "Data We Collect",
+        privacyDataText: `- Email Address: When using the "Contact Us" feature to send messages to the developer.<br>
+                          - User Messages: The messages you send to the developer through the "Contact Us" feature.<br>
+                          - Player Record: Collecting player data for the leaderboard in multiplayer mode.`,
+        privacyUsageTitle: "Data Usage",
+        privacyUsageText: `- Responding to your inquiries: Using your data to reply to your messages.<br>
+                           - Improving user experience: Using your data to enhance the user experience in the game.`,
+        privacyProtectionTitle: "Data Protection",
+        privacyProtectionText: `- Encryption: Protecting your data from unauthorized access.<br>
+                              - Secure Storage: Storing your data on secure servers.`,
+        privacySharingTitle: "Data Sharing",
+        privacySharingText: "- Your data is not shared: with any third party without your consent.",
+        privacyRightsTitle: "User Rights",
+        privacyRightsText: `- Access to Data: Request a copy of your data.<br>
+                            - Deletion of Data: Request the deletion of your data.`,
+        privacyUpdatesTitle: "Updates",
+        privacyUpdatesText: "- We update the privacy policy: periodically.",
+        privacyConsentText: "By using our game, you agree to this privacy policy.",
+        agreePrivacyBtn: "Agree",
+        aboutUsTitle: "About Us",
+        aboutUsContent_h: `Welcome to Aziz Games!<br><br>
+                          We are a startup specializing in game publishing and distribution, owned by the designer and developer Abdulaziz Abdullah Masaad Al-Sharji. We aim to provide fun and exciting gaming experiences for users.<br><br>
+                          <h3>Our Mission:</h3>
+                          - Deliver high-quality games.<br>
+                          - Enhance user experience.<br>
+                          - Listen to user feedback.<br><br>
+                          <h3>About the Owner:</h3>
+                          - Abdulaziz Abdullah Masaad Al-Sharji: Game developer and designer, digital content creator, and graphic designer.<br><br>
+                          <h3>Our Location:</h3>
+                          - Northwest Qa'atabah - Ad Dali' Governorate - Republic of Yemen.<br><br>
+                          Thank you for your interest in Aziz Games!`,
+        contactUsTitle: "Contact Us",
+        contactIntro: "Welcome! If you have any questions or feedback about our game NITRO FIRE, please fill out the form below:",
+        contactMessagePlaceholder: "Type your message here...",
+        contactEmailPlaceholder: "Enter your email...",
+        sendContactBtn: "Send",
+        contactConfirmation: "We'll be happy to answer your questions and hear your feedback!",
+        myAchievementsBtn: "My Achievements",
+        myProfileBtn: "My Profile",
+        editProfileTitle: "Edit Profile",
+        saveBtn: "Save",
+        cancelBtn: "Cancel",
+        changeProfilePicBtn: "Change Picture",
+        takeScreenshotBtn: "Screenshot",
+        level: "Level",
+        currentRankDisplayTitle: "Current Rank & Levels:",
+        previousRanksDisplayTitle: "Previously Achieved Ranks:",
+        achievementsScore: "Score: ",
+        achievementsDistance: "Distance: ",
+        achievementsPlayerName: "Name: ",
+        achievementsPlayerRank: "Rank: "
+      }
+    };
+    const rankIcons = [ /* citace: 1 */
+        "⭐","🏅","🥇","🏆","🎖️","🏵️","👑","🚀","⚡","💼",
+        "🔱","🏛️","🌟","✨","🌠","🌌","💫","💥","🔥","🌀", 
+        "⭐","🏅","🥇","🏆","🎖️","🏵️","👑","🚀","⚡","💼",
+        "🔱","🏛️","🌟","✨","🌠","🌌","💫","💥","🔥","🌀",
+        "⭐","🏅","🥇","🏆","🎖️","🏵️","👑","🚀","⚡","💼",
+        "🔱","🏛️","🌟","✨","🌠","🌌","💫","💥","🔥","🌀",
+        "⭐","🏅","🥇","🏆","🎖️","🏵️","👑","🚀","⚡","💼",
+        "🔱","🏛️","🌟","✨","🌠","🌌","💫","💥","🔥","🌀",
+        "⭐","🏅","🥇","🏆","🎖️","🏵️","👑","🚀","⚡","💼",
+        "🔱","🏛️","🌟","✨","🌠","🌌","💫","💥","🔥","🌀"
+    ];
+
+    function saveSettings() {
+      const settings = { language: currentLanguage, soundsEnabled: soundsEnabled, controlMethod: controlMethod };
+      localStorage.setItem("gameSettings", JSON.stringify(settings));
+    }
+    function loadSettings() {
+      const savedSettings = JSON.parse(localStorage.getItem("gameSettings") || "{}");
+      if (savedSettings.language) currentLanguage = savedSettings.language;
+      if (typeof savedSettings.soundsEnabled !== "undefined") soundsEnabled = savedSettings.soundsEnabled;
+      if (savedSettings.controlMethod) controlMethod = savedSettings.controlMethod;
+      document.getElementById("startScreenCoinAmount").textContent = formatNumber(persistentCoins);
+      let bestScore = parseInt(localStorage.getItem("bestScore") || "0");
+      document.getElementById("startScreenPointsAmount").textContent = formatNumber(bestScore);
+
+      // Load profile data
+      let playerName = localStorage.getItem("playerName") || (currentLanguage === "ar" ? "لاعب جديد" : "New Player");
+      let profilePicture = localStorage.getItem("profilePicture") || "https://via.placeholder.com/100?text=Profile";
+      if (!localStorage.getItem("rankHistory")) {
+          localStorage.setItem("rankHistory", JSON.stringify([]));
+      }
+      document.getElementById("popupProfileImage").src = profilePicture;
+      const nameDisplayElement = document.getElementById("popupPlayerName");
+      if(nameDisplayElement) nameDisplayElement.textContent = translations[currentLanguage].achievementsPlayerName + playerName; // Ensure element exists
+      
+      const profilePicPreviewElement = document.getElementById("profilePicPreview");
+      if(profilePicPreviewElement) profilePicPreviewElement.src = profilePicture;
+
+      const editPlayerNameInputElement = document.getElementById("editPlayerNameInput");
+      if(editPlayerNameInputElement) editPlayerNameInputElement.value = playerName;
+
+
+      document.getElementById("settingsBtnIcon").src = generateSettingsIcon();
+      document.getElementById("achievementsBtnIcon").src = generateAchievementsIcon();
+      document.getElementById("storeBtnIcon").src = generateStoreIcon();
+      updateLanguage();
+    }
+
+    let persistentCoins = parseInt(localStorage.getItem("coinBalance") || "0", 10);
+    let magnetBatch = parseInt(localStorage.getItem("magnetBatch") || "0", 10);
+    let protectionBatch = parseInt(localStorage.getItem("protectionBatch") || "0", 10);
+    let pointsBoostBatch = parseInt(localStorage.getItem("pointsBoostBatch") || "0", 10);
+    let antibioticBatch = parseInt(localStorage.getItem("antibioticBatch") || "0", 10);
+    let superSpeedBatch = parseInt(localStorage.getItem("superSpeedBatch") || "0", 10);
+    // highestRank is now part of populateAchievementsScreen
+    
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      roadX = (window.innerWidth - roadWidth) / 2;
+      updateLanes();
+    }
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      checkDeviceAndOrientation();
+      initBuildings();
+    });
+    resizeCanvas();
+
+    let rainDrops = [];
+    const numRainDrops = 100;
+    function initRain() {
+      rainDrops = [];
+      for (let i = 5; i < numRainDrops; i++) {
+        rainDrops.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          length: Math.random() * 20 + 10,
+          speed: Math.random() * 5 + 2,
+          color: "hsla(" + Math.floor(Math.random()*360) + ",70%,60%,0.7)"
+        });
+      }
+    }
+    function updateRain(dt) {
+      const speedFactor = globalCurrentSpeed / initialSpeed;
+      rainDrops.forEach(drop => {
+        drop.y += drop.speed * 0.9 * speedFactor;
+        if (drop.y > window.innerHeight) {
+          drop.y = -drop.length;
+          drop.x = Math.random() * window.innerWidth;
+          drop.color = "hsla(" + Math.floor(Math.random()*360) + ",70%,60%,0.7)";
+        }
+      });
+    }
+    function drawRain() {
+      ctx.save();
+      ctx.lineWidth = 1;
+      rainDrops.forEach(drop => {
+        ctx.strokeStyle = drop.color;
+        ctx.beginPath();
+        ctx.moveTo(drop.x, drop.y);
+        ctx.lineTo(drop.x, drop.y + drop.length);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+    function drawFog() {
+      ctx.save();
+      let gradient = ctx.createLinearGradient(0,0,0,window.innerHeight);
+      gradient.addColorStop(0, "rgba(200,200,200,0.0)");
+      gradient.addColorStop(0.5, "rgba(200,200,200,0.2)");
+      gradient.addColorStop(1, "rgba(200,200,200,0.4)");
+      ctx.fillStyle = gradient;
+      ctx.globalAlpha = 0.5;
+      ctx.fillRect(0,0,window.innerWidth,window.innerHeight);
+      ctx.restore();
+    }
+    initRain();
+    let mainAudioCtx = null;
+
+    function isSoundOrCoinActionDisabled() {
+        const overlaysToCheck = ['startOverlay', 'settingsOverlay', 'achievementsOverlay', 'storeOverlay', 'aboutUsOverlay', 'contactUsOverlay', 'privacyPolicyPopup', 'myAchievementsPopup', 'editProfilePopup'];
+        for (const overlayId of overlaysToCheck) {
+            const el = document.getElementById(overlayId);
+            if (el && (el.style.display === 'flex' || el.style.display === 'block')) {
+                return true;
+            }
+        }
+        if (document.hidden) { 
+            return true;
+        }
+        return false;
+    }
+
+    function playButtonSound() {
+  if (!mainAudioCtx || !soundsEnabled || isSoundOrCoinActionDisabled()) return;
+  const osc = mainAudioCtx.createOscillator();
+  const gainNode = mainAudioCtx.createGain(); // تم تغيير الاسم لتجنب التعارض
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(880, mainAudioCtx.currentTime); // تردد أعلى قليلاً لنقرة الزر
+  gainNode.gain.setValueAtTime(0.06, mainAudioCtx.currentTime); // جهارة أقل
+  gainNode.gain.exponentialRampToValueAtTime(0.001, mainAudioCtx.currentTime + 0.07); // مدة أقصر
+  osc.connect(gainNode);
+
+  if (AudioManager && AudioManager.initialized && AudioManager.masterGain) {
+    gainNode.connect(AudioManager.masterGain);
+  } else {
+    gainNode.connect(mainAudioCtx.destination); // كحل احتياطي
+  }
+  osc.start();
+  osc.stop(mainAudioCtx.currentTime + 0.07);
+}
+    function vibrateFeedback(duration=50){ if(navigator.vibrate){navigator.vibrate(duration);} }
+    document.querySelectorAll("button, a").forEach(el => {
+         el.addEventListener("click", ()=>{ playButtonSound(); vibrateFeedback(); });
+    });
+    const MusicManager = {
+      currentOscillators: [],
+      currentScreen: null, 
+      playSequence(seq) {
+        if(!mainAudioCtx || !soundsEnabled || (this.currentScreen && isSoundOrCoinActionDisabled())) return; 
+        let now = mainAudioCtx.currentTime;
+        this.stopMusic(); 
+        seq.forEach(note=>{
+          const osc = mainAudioCtx.createOscillator();
+          const gain = mainAudioCtx.createGain();
+          osc.type = note.type || "sine";
+          osc.frequency.setValueAtTime(note.frequency, now);
+          let vol = note.volume;
+          if(this.currentScreen==="startOverlay") vol*=0.5;
+          else if(this.currentScreen==="gameOverOverlay") vol*=0.2;
+
+          gain.gain.setValueAtTime(vol, now);
+          osc.connect(gain);
+          gain.connect(mainAudioCtx.destination);
+          osc.start(now);
+          osc.stop(now+note.duration);
+          this.currentOscillators.push(osc);
+          now+=note.duration;
+        });
+      },
+      stopMusic() {
+        this.currentOscillators.forEach(o=>{try{o.stop();}catch{}});
+        this.currentOscillators = [];
+      },
+      playStartMusic() {
+        if (this.currentScreen !== "startOverlay") return; 
+        this.playSequence([
+          { frequency: 440, duration: 0.5, type: "sine", volume: 0.2 },
+          { frequency: 494, duration: 0.5, type: "sine", volume: 0.2 },
+          { frequency: 523, duration: 0.5, type: "sine", volume: 0.2 },
+          { frequency: 587, duration: 0.5, type: "sine", volume: 0.2 }
+        ]);
+      },
+      playWaitingMusic() {
+         if (this.currentScreen !== "waitingOverlay") return;
+        this.playSequence([
+          // تم خفض قيمة volume من 0.05 إلى 0.025
+          { frequency: 330, duration: 0.5, type: "square", volume: 0.025 },
+          { frequency: 349, duration: 0.5, type: "square", volume: 0.025 },
+          { frequency: 392, duration: 0.5, type: "square", volume: 0.025 },
+          { frequency: 440, duration: 0.5, type: "square", volume: 0.025 }
+        ]);
+      },
+      playGameOverMusic() {
+        if (this.currentScreen !== "gameOverOverlay") return;
+        // نغمة جديدة تميل إلى الانتصار أو الإنجاز
+        // تستخدم تتابعات صاعدة ومقام موسيقي أكثر إشراقاً
+        this.playSequence([
+          { frequency: 261.63, duration: 0.35, type: "triangle", volume: 0.16 }, // C4
+          { frequency: 329.63, duration: 0.35, type: "triangle", volume: 0.16 }, // E4
+          { frequency: 392.00, duration: 0.35, type: "triangle", volume: 0.16 }, // G4
+          { frequency: 523.25, duration: 0.7, type: "triangle", volume: 0.19 }   // C5 (أطول وأقوى قليلاً)
+          // إجمالي المدة: 0.35 * 3 + 0.7 = 1.05 + 0.7 = 1.75 ثانية
+          // مدة التكرار في startLoop مضبوطة على 2.4 ثانية, هذا جيد سيترك وقفة قصيرة
+        ]);
+      },
+      startLoop(screenId) { 
+        this.currentScreen = screenId;
+        if (isSoundOrCoinActionDisabled() && screenId !== 'gameCanvas') { 
+             this.stopMusic();
+             return;
+        }
+        const loop = ()=>{
+          if(this.currentScreen!==screenId || !soundsEnabled) { 
+              this.stopMusic();
+              return;
+          }
+          if(screenId==="startOverlay") this.playStartMusic();
+          else if(screenId==="waitingOverlay") this.playWaitingMusic();
+          else if(screenId==="gameOverOverlay") this.playGameOverMusic();
+          setTimeout(loop, (screenId==="gameOverOverlay"?2.4:2.0)*1000);
+        };
+        loop();
+      },
+      stopLoop() {
+        this.currentScreen = null;
+        this.stopMusic();
+      }
+    };
+  const AudioManager = {
+  audioCtx: null,
+  masterGain: null,
+
+  engineOsc: null,    // المذبذب الأساسي للمحرك
+  engineGain: null,
+  engineOsc2: null,   // المذبذب الثانوي (للتناغمات)
+  engineGain2: null,
+
+  noiseSource: null,  // مولد الضوضاء
+  noiseFilter: null,  // مرشح الضوضاء
+  noiseGain: null,    // جهارة الضوضاء
+
+  initialized: false,
+  currentScreenForSounds: null,
+
+  // ===== معلمات تصميم صوت المحرك =====
+  baseFundamental: 40, // التردد الأساسي للمحرك بالهرتز عند أقل سرعة
+  harmonicInterval: 1.3, // عامل التناغم للمذبذب الثاني (مثلاً 1.5 يعطي نغمة خامسة، 2 يعطي أوكتاف)
+  detuneAmount: 6,       // مقدار بسيط من عدم التطابق في التردد (بالـ cents) لإضافة ثراء للصوت
+
+  noiseBaseGain: 0.08,   // الجهارة الأساسية لمكون الضوضاء
+  noiseMinCutoff: 150,    // أقل تردد قطع لمرشح الضوضاء
+  noiseMaxCutoff: 900,   // أعلى تردد قطع لمرشح الضوضاء
+  noiseQ: 0.8,            // عامل الجودة لمرشح الضوضاء (Q factor)
+
+  init() {
+    if (this.initialized) return;
+    try {
+      mainAudioCtx = mainAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      this.audioCtx = mainAudioCtx;
+      this.masterGain = this.audioCtx.createGain();
+      this.masterGain.gain.value = soundsEnabled ? 0.5 : 0; // الحفاظ على مستوى الجهارة الرئيسي
+      this.masterGain.connect(this.audioCtx.destination);
+
+      // === إعداد المذبذب الأساسي ===
+      this.engineOsc = this.audioCtx.createOscillator();
+      this.engineOsc.type = "sawtooth"; // موجة غنية بالتناغمات
+      this.engineOsc.frequency.value = this.baseFundamental;
+      this.engineGain = this.audioCtx.createGain();
+      this.engineGain.gain.value = 0; // يبدأ صامتاً، سيتم تحديث الجهارة لاحقاً
+      this.engineOsc.connect(this.engineGain);
+      this.engineGain.connect(this.masterGain);
+      this.engineOsc.start();
+
+      // === إعداد المذبذب الثانوي ===
+      this.engineOsc2 = this.audioCtx.createOscillator();
+      this.engineOsc2.type = "sawtooth";
+      this.engineOsc2.frequency.value = this.baseFundamental * this.harmonicInterval;
+      if (this.detuneAmount !== 0) {
+        this.engineOsc2.detune.value = this.detuneAmount; // لثراء الصوت
+      }
+      this.engineGain2 = this.audioCtx.createGain();
+      this.engineGain2.gain.value = 0; // يبدأ صامتاً
+      this.engineOsc2.connect(this.engineGain2);
+      this.engineGain2.connect(this.masterGain);
+      this.engineOsc2.start();
+
+      // === إعداد مكون الضوضاء ===
+      const bufferSize = this.audioCtx.sampleRate * 1; // ثانية واحدة من الضوضاء كافية للتكرار
+      const noiseBuffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1; // ضوضاء بيضاء
+      }
+      this.noiseSource = this.audioCtx.createBufferSource();
+      this.noiseSource.buffer = noiseBuffer;
+      this.noiseSource.loop = true;
+
+      this.noiseFilter = this.audioCtx.createBiquadFilter();
+      this.noiseFilter.type = "lowpass"; // lowpass للهدير، يمكن تغييره إلى bandpass لصوت عادم أكثر تحديداً
+      this.noiseFilter.frequency.value = this.noiseMinCutoff;
+      this.noiseFilter.Q.value = this.noiseQ;
+
+      this.noiseGain = this.audioCtx.createGain();
+      this.noiseGain.gain.value = 0; // يبدأ صامتاً
+
+      this.noiseSource.connect(this.noiseFilter);
+      this.noiseFilter.connect(this.noiseGain);
+      this.noiseGain.connect(this.masterGain);
+      this.noiseSource.start();
+
+      this.initialized = true;
+    } catch (e) {
+      console.error("Failed to initialize AudioContext for engine:", e);
+      soundsEnabled = false; // تعطيل الصوت إذا فشل التهيئة
+    }
+  },
+
+  setActiveScreen(screenId) {
+    this.currentScreenForSounds = screenId;
+    if (isSoundOrCoinActionDisabled() && screenId !== 'gameCanvas') {
+      this.stopAllGameSounds();
+    }
+  },
+
+  updateEngineSound(speed) {
+    if (!this.initialized || !soundsEnabled || this.currentScreenForSounds !== 'gameCanvas') {
+      // ... (الكود الحالي لكتم الصوت) ...
+      return;
+    }
+
+    const rpmFactor = Math.max(1, speed / initialSpeed);
+    const rampTime = 0.08;
+
+    // === تحديث الترددات ===
+    const fundamentalFreq = this.baseFundamental * rpmFactor;
+    this.engineOsc.frequency.setTargetAtTime(fundamentalFreq, this.audioCtx.currentTime, rampTime);
+    this.engineOsc2.frequency.setTargetAtTime(fundamentalFreq * this.harmonicInterval, this.audioCtx.currentTime, rampTime);
+
+    // === تحديث الجهارة (Gain) - تم تخفيض القيم ===
+    let osc1TargetGain = 0.025 + 0.018 * rpmFactor; // <-- تم تقليل القيم (كانت 0.035 + 0.03)
+    let osc2TargetGain = 0.015 + 0.012 * rpmFactor; // <-- تم تقليل القيم (كانت 0.020 + 0.025)
+    let noiseTargetGain = this.noiseBaseGain + 0.005 * rpmFactor; // <-- تم تقليل معامل rpmFactor (كان 0.008)
+
+    this.engineGain.gain.setTargetAtTime(Math.min(osc1TargetGain, 0.09), this.audioCtx.currentTime, rampTime); // <-- تم تقليل الحد الأقصى (كان 0.15)
+    this.engineGain2.gain.setTargetAtTime(Math.min(osc2TargetGain, 0.07), this.audioCtx.currentTime, rampTime); // <-- تم تقليل الحد الأقصى (كان 0.12)
+    this.noiseGain.gain.setTargetAtTime(Math.min(noiseTargetGain, 0.035), this.audioCtx.currentTime, rampTime); // <-- تم تقليل الحد الأقصى (كان 0.07)
+
+    // === تحديث مرشح الضوضاء ===
+    const normalizedRpm = Math.min(1, (rpmFactor - 1) / (3.75 - 1));
+    const cutoff = this.noiseMinCutoff + (this.noiseMaxCutoff - this.noiseMinCutoff) * normalizedRpm;
+    this.noiseFilter.frequency.setTargetAtTime(cutoff, this.audioCtx.currentTime, rampTime);
+  },
+
+  stopAllGameSounds() { // يقوم بكتم أصوات المحرك المستمرة، لا يفصل المذبذبات التي بدأت في init
+    if (!this.initialized) return;
+    if (this.engineGain) this.engineGain.gain.setTargetAtTime(0, this.audioCtx.currentTime, 0.02);
+    if (this.engineGain2) this.engineGain2.gain.setTargetAtTime(0, this.audioCtx.currentTime, 0.02);
+    if (this.noiseGain) this.noiseGain.gain.setTargetAtTime(0, this.audioCtx.currentTime, 0.02);
+  },
+
+  playCoinSound() {
+    if (!this.initialized || !soundsEnabled || this.currentScreenForSounds !== 'gameCanvas') return;
+    let osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(1200, this.audioCtx.currentTime); // تردد أعلى لعملة مميزة
+    osc.frequency.exponentialRampToValueAtTime(1800, this.audioCtx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.15, this.audioCtx.currentTime); // جهارة معتدلة
+    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.25);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(this.audioCtx.currentTime);
+    osc.stop(this.audioCtx.currentTime + 0.25);
+  },
+
+  playCrash() {
+    if (!this.initialized || !soundsEnabled || this.currentScreenForSounds !== 'gameCanvas') return;
+    const dur = 0.25; // مدة أطول قليلاً
+    const buf = this.audioCtx.createBuffer(1, this.audioCtx.sampleRate * dur, this.audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) { data[i] = Math.random() * 2 - 1; } // ضوضاء بيضاء
+    const noise = this.audioCtx.createBufferSource();
+    const filter = this.audioCtx.createBiquadFilter();
+    const gain = this.audioCtx.createGain();
+    noise.buffer = buf;
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1000, this.audioCtx.currentTime); // تردد قطع أعلى قليلاً
+    filter.frequency.exponentialRampToValueAtTime(200, this.audioCtx.currentTime + dur * 0.8); // انخفاض حاد في التردد
+    gain.gain.setValueAtTime(0.35, this.audioCtx.currentTime); // جهارة أعلى للتحطم
+    gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + dur);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain);
+    noise.start();
+    noise.stop(this.audioCtx.currentTime + dur);
+  },
+
+  playBulletSound() {
+    if (!this.initialized || !soundsEnabled || this.currentScreenForSounds !== 'gameCanvas') return;
+    let osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.type = "triangle"; // تغيير الشكل الموجي قليلاً
+    osc.frequency.setValueAtTime(600, this.audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, this.audioCtx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.12, this.audioCtx.currentTime); // تعديل الجهارة
+    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.1);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start();
+    osc.stop(mainAudioCtx.currentTime + 0.1);
+  },
+
+  playExplosionSound() {
+    if (!this.initialized || !soundsEnabled || this.currentScreenForSounds !== 'gameCanvas') return;
+    let osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(120, this.audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, this.audioCtx.currentTime + 0.3); // انخفاض التردد
+    gain.gain.setValueAtTime(0.28, this.audioCtx.currentTime); // تعديل الجهارة
+    gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.3);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start();
+    osc.stop(mainAudioCtx.currentTime + 0.3);
+  },
+
+  playSuccessSound() {
+    if (!this.initialized || !soundsEnabled) return;
+    const osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.type = 'sine'; // sine أكثر نعومة للنجاح
+    osc.frequency.setValueAtTime(700, this.audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1050, this.audioCtx.currentTime + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(880, this.audioCtx.currentTime + 0.25);
+    gain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.35);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start();
+    osc.stop(this.audioCtx.currentTime + 0.35);
+  },
+
+  stopAll() {
+    if (this.masterGain) {
+      this.masterGain.gain.setTargetAtTime(0, this.audioCtx.currentTime, 0.1);
+    }
+    this.stopAllGameSounds();
+  }
+};
+    function playCarControlSound() {
+  // التأكد من أن السياق الصوتي متاح، وأن الصوت مفعل، وأننا في شاشة اللعب
+  if (!mainAudioCtx || !soundsEnabled || (AudioManager && AudioManager.currentScreenForSounds !== 'gameCanvas')) return;
+
+  let osc = mainAudioCtx.createOscillator();
+  const clickGain = mainAudioCtx.createGain(); // استخدام اسم متغير مختلف لعقدة الجهارة
+
+  osc.type = "sine"; // موجة جيبية تعطي نقرة نظيفة، يمكن تجربة "square" لنقرة أقوى قليلاً
+  osc.frequency.setValueAtTime(1200, mainAudioCtx.currentTime); // تردد عالي للنقرة (يمكن تعديله)
+  
+  clickGain.gain.setValueAtTime(0.12, mainAudioCtx.currentTime); // بداية جهارة النقرة (يمكن تعديلها)
+  // انحسار سريع جداً لصوت النقرة (مثلاً 50 ميلي ثانية)
+  clickGain.gain.exponentialRampToValueAtTime(0.001, mainAudioCtx.currentTime + 0.05); 
+
+  osc.connect(clickGain);
+  // التأكد من التوجيه عبر masterGain إذا كان AudioManager مهيأً
+  if (AudioManager && AudioManager.initialized && AudioManager.masterGain) {
+    clickGain.connect(AudioManager.masterGain);
+  } else {
+    clickGain.connect(mainAudioCtx.destination); // كحل احتياطي
+  }
+
+  osc.start(mainAudioCtx.currentTime);
+  // إيقاف المذبذب بعد مدة قصيرة جداً
+  osc.stop(mainAudioCtx.currentTime + 0.05); 
+}
+    document.querySelectorAll(".control-btn").forEach(btn=>{
+      btn.addEventListener("touchstart", e=>{
+        e.preventDefault();
+        btn.style.transform="scale(0.9)";
+        playCarControlSound();
+        vibrateFeedback();
+        if(btn.id==="leftBtn") moveLeft = true;
+        else if(btn.id==="rightBtn") moveRight = true;
+      });
+      btn.addEventListener("touchend", e=>{
+        e.preventDefault();
+        btn.style.transform="scale(1)";
+        if(btn.id==="leftBtn") moveLeft = false;
+        else if(btn.id==="rightBtn") moveRight = false;
+      });
+    });
+    
+    function getGlobalLevel(score) {
+        return Math.max(1, Math.floor(score / 100) + 1);
+    }
+
+    function getPlayerRank(score) {
+      const rankNamesAr = translations.ar.rankNames;
+      const rankNamesEn = translations.en.rankNames;
+      
+      const globalLevel = getGlobalLevel(score); 
+      const rankIndex = Math.min(Math.floor((globalLevel - 1) / 10), rankNamesAr.length - 1);
+
+      const currentRankNameAr = rankNamesAr[rankIndex];
+      const currentRankNameEn = rankNamesEn[rankIndex];
+      const icon = rankIcons[rankIndex % rankIcons.length]; 
+
+      const startLevelOfCurrentRank = rankIndex * 10 + 1;
+      const levelsInCurrentRank = [];
+      for (let i = 0; i < 10; i++) {
+        const levelNum = startLevelOfCurrentRank + i;
+        levelsInCurrentRank.push({
+          level: levelNum,
+          completed: globalLevel >= levelNum
+        });
+      }
+
+      return {
+        name_ar: currentRankNameAr,
+        name_en: currentRankNameEn,
+        icon: icon,
+        globalLevel: globalLevel, 
+        levelsInCurrentRank: levelsInCurrentRank, 
+        rankIndex: rankIndex 
+      };
+    }
+    
+    function updateLanguage(){
+      const d = translations[currentLanguage];
+      document.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+
+      document.getElementById("startMessage").textContent = d.startMessage;
+      document.getElementById("startBtn").textContent = d.startBtn;
+      document.getElementById("restartBtn").textContent = d.restartBtn;
+      document.getElementById("gameOverMessage").textContent = d.gameOverMessage;
+      
+      // === تحديث أزرار الإعدادات ===
+      document.getElementById("langText").textContent = d.langBtn;
+      document.getElementById("soundText").textContent = soundsEnabled ? d.soundOn : d.soundOff;
+      document.getElementById("controlText").textContent = controlMethod==="buttons" ? d.controlButtons : d.controlRotation;
+
+      document.getElementById("soundIcon").src = generateSoundIcon(soundsEnabled);
+      document.getElementById("controlIcon").src = generateControlIcon(controlMethod === "buttons");
+      document.getElementById("langIcon").src = generateLanguageIcon();
+      // ===========================
+
+      document.getElementById("settingsTitle").textContent = d.settingsTitle;
+      document.getElementById("storeTitle").textContent = d.storeTitle;
+      document.getElementById("privacyTitle").textContent = d.privacyTitle;
+      document.getElementById("aboutUsTitle").textContent = d.aboutUsTitle;
+      document.getElementById("aboutUsContent").innerHTML = d.aboutUsContent_h;
+      document.getElementById("contactUsTitle").textContent = d.contactUsTitle;
+      document.getElementById("contactIntro").textContent = d.contactIntro;
+      document.getElementById("contactMessage").placeholder = d.contactMessagePlaceholder;
+      document.getElementById("contactEmail").placeholder = d.contactEmailPlaceholder;
+      document.getElementById("sendContactBtn").textContent = d.sendContactBtn;
+      document.getElementById("contactConfirmationPopup").textContent = d.contactConfirmation;
+      document.getElementById("privacyPolicyLink").textContent = d.privacyPolicyLink;
+      document.getElementById("aboutUsLink").textContent = d.aboutUsLink;
+      document.getElementById("contactUsLink").textContent = d.contactUsLink;
+
+      document.getElementById("privacyIntroTitle").textContent = d.privacyIntroTitle;
+      document.getElementById("privacyIntroText").textContent = d.privacyIntroText;
+      document.getElementById("privacyDataTitle").textContent = d.privacyDataTitle;
+      document.getElementById("privacyDataText").innerHTML = d.privacyDataText;
+      document.getElementById("privacyUsageTitle").textContent = d.privacyUsageTitle;
+      document.getElementById("privacyUsageText").innerHTML = d.privacyUsageText;
+      document.getElementById("privacyProtectionTitle").textContent = d.privacyProtectionTitle;
+      document.getElementById("privacyProtectionText").innerHTML = d.privacyProtectionText;
+      document.getElementById("privacySharingTitle").textContent = d.privacySharingTitle;
+      document.getElementById("privacySharingText").textContent = d.privacySharingText;
+      document.getElementById("privacyRightsTitle").textContent = d.privacyRightsTitle;
+      document.getElementById("privacyRightsText").innerHTML = d.privacyRightsText;
+      document.getElementById("privacyUpdatesTitle").textContent = d.privacyUpdatesTitle;
+      document.getElementById("privacyUpdatesText").textContent = d.privacyUpdatesText;
+      document.getElementById("privacyConsentText").textContent = d.privacyConsentText;
+      document.getElementById("agreePrivacyBtn").textContent = d.agreePrivacyBtn;
+      document.getElementById("privacyPolicyContent").style.textAlign = currentLanguage === 'ar' ? 'right' : 'left';
+
+      document.getElementById("storeCoinCounter").textContent = d.storeCoinCounter + formatNumber(persistentCoins); // استخدام الدالة الجديدة
+      document.querySelector(".productName").textContent = d.productMagnetName;
+      document.querySelector(".productDesc").textContent = d.productMagnetDesc;
+      document.querySelector(".productPrice").textContent = d.productPrice + "100 " + (currentLanguage==="ar"?"عملة":"coins");
+      document.querySelector(".productQuantity").textContent = d.productQuantity + magnetBatch;
+      document.getElementById("buyMagnetBtn").textContent = d.buyButtonText;
+
+      document.querySelector(".protectionProductName").textContent = d.productProtectionName;
+      document.querySelector(".protectionProductDesc").textContent = d.productProtectionDesc;
+      document.querySelector(".protectionProductPrice").textContent = d.productProtectionPrice;
+      document.querySelector(".protectionProductQuantity").textContent = d.productQuantity + protectionBatch;
+      document.getElementById("buyProtectionBtn").textContent = d.buyButtonText;
+
+      document.querySelector(".pointsBoostProductName").textContent = d.productPointsBoostName;
+      document.querySelector(".pointsBoostProductDesc").textContent = d.productPointsBoostDesc;
+      document.querySelector(".pointsBoostProductPrice").textContent = d.productPointsBoostPrice;
+      document.querySelector(".pointsBoostProductQuantity").textContent = d.productQuantity + pointsBoostBatch;
+      document.getElementById("buyPointsBoostBtn").textContent = d.buyButtonText;
+
+      document.querySelector(".antibioticProductName").textContent = d.productAntibioticName;
+      document.querySelector(".antibioticProductDesc").textContent = d.productAntibioticDesc;
+      document.querySelector(".antibioticProductPrice").textContent = d.productAntibioticPrice;
+      document.querySelector(".antibioticProductQuantity").textContent = d.productQuantity + antibioticBatch;
+      document.getElementById("buyAntibioticBtn").textContent = d.buyButtonText;
+
+      document.querySelector(".superSpeedProductName").textContent = d.productSuperSpeedName;
+      document.querySelector(".superSpeedProductDesc").textContent = d.productSuperSpeedDesc;
+      document.querySelector(".superSpeedProductPrice").textContent = d.productSuperSpeedPrice;
+      document.querySelector(".superSpeedProductQuantity").textContent = d.productQuantity + superSpeedBatch;
+      document.getElementById("buySuperSpeedBtn").textContent = d.buyButtonText;
+
+      document.getElementById("settingsBtnText").textContent = " " + d.startSettingsBtn;
+      document.getElementById("achievementsBtnText").textContent = " " + d.startAchievementsBtn;
+      document.getElementById("storeBtnText").textContent = " " + d.startStoreBtn;
+      document.querySelectorAll(".backBtn").forEach(btn=>{ btn.textContent = d.back; });
+
+      document.querySelector("#resumeOverlay .resume-message").textContent = d.resumeMessage;
+      document.getElementById("resumeGameBtn").textContent = d.resumeGameBtn;
+
+      document.getElementById("achievementsTitle").textContent = d.achievementsTitle;
+      document.getElementById("myAchievementsBtn").textContent = d.myAchievementsBtn;
+      
+      const myAchievementsPopupTitleEl = document.getElementById("myAchievementsPopupTitle");
+      if(myAchievementsPopupTitleEl) myAchievementsPopupTitleEl.textContent = d.myAchievementsBtn; 
+
+      document.getElementById("myProfileBtn").textContent = d.myProfileBtn;
+      document.getElementById("takeAchievementsScreenshotBtn").textContent = d.takeScreenshotBtn;
+
+      document.getElementById("editProfileTitle").textContent = d.editProfileTitle;
+      document.getElementById("editPlayerNameInput").placeholder = currentLanguage === 'ar' ? 'أدخل اسمك' : 'Enter your name';
+      document.getElementById("changeProfilePicBtn").textContent = d.changeProfilePicBtn;
+      document.getElementById("saveProfileBtn").textContent = d.saveBtn;
+      document.getElementById("cancelEditProfileBtn").textContent = d.cancelBtn;
+      
+      if (document.getElementById('achievementsOverlay').style.display === 'flex') {
+        populateAchievementsScreen();
+      }
+      if (document.getElementById('myAchievementsPopup').style.display === 'flex') {
+        const playerName = localStorage.getItem("playerName") || (currentLanguage === "ar" ? "لاعب جديد" : "New Player");
+        const profilePicture = localStorage.getItem("profilePicture") || "https://via.placeholder.com/100?text=Profile";
+        const bestScore = parseInt(localStorage.getItem("bestScore") || "0");
+        const bestDist = parseFloat(localStorage.getItem("bestDistance") || "0").toFixed(2);
+        const distUnit = currentLanguage === "ar" ? " كم" : " km";
+        const rankInfo = getPlayerRank(bestScore);
+
+        document.getElementById("popupProfileImage").src = profilePicture;
+        document.getElementById("popupPlayerName").textContent = `${d.achievementsPlayerName} ${playerName}`;
+        document.getElementById("popupPlayerRank").textContent = `${d.achievementsPlayerRank} ${currentLanguage === "ar" ? rankInfo.name_ar : rankInfo.name_en} (${d.level} ${rankInfo.globalLevel}) ${rankInfo.icon}`;
+        document.getElementById("popupPlayerScore").textContent = d.achievementsScore + bestScore;
+        document.getElementById("popupPlayerDistance").textContent = d.achievementsDistance + bestDist + distUnit;
+      }
+
+
+       if (typeof updateDashboard === 'function' && !gameOver) {
+           updateDashboard();
+       }
+       document.getElementById("startScreenCoinAmount").textContent = formatNumber(persistentCoins); // استخدام الدالة الجديدة
+       let bestScoreForStart = parseInt(localStorage.getItem("bestScore") || "0");
+       document.getElementById("startScreenPointsAmount").textContent = formatNumber(bestScoreForStart); // استخدام الدالة الجديدة
+    }
+
+    function toggleLanguage(){
+      currentLanguage = currentLanguage==="ar"?"en":"ar";
+      updateLanguage(); // هذه الدالة ستقوم بتحديث كل شيء بما في ذلك الأيقونات
+      saveSettings();
+    }
+    document.getElementById("langToggleBtn").addEventListener("click", toggleLanguage);
+    function toggleControlMethod(){
+      controlMethod = controlMethod==="buttons"?"rotation":"buttons";
+      if(controlMethod==="buttons"){ moveLeft = false; moveRight = false; }
+      
+      // تحديث النص والأيقونة
+      const d = translations[currentLanguage];
+      document.getElementById("controlText").textContent = controlMethod==="buttons" ? d.controlButtons : d.controlRotation;
+      document.getElementById("controlIcon").src = generateControlIcon(controlMethod === "buttons");
+
+      updateLanguage(); // استدعاء لتحديث النص فقط
+      saveSettings();
+    }
+    document.getElementById("controlMethodBtn").addEventListener("click", toggleControlMethod);
+    function toggleSound(){
+      soundsEnabled = !soundsEnabled;
+      if(AudioManager.masterGain) AudioManager.masterGain.gain.value = soundsEnabled?0.5:0;
+      
+      // تحديث النص والأيقونة
+      const d = translations[currentLanguage];
+      document.getElementById("soundText").textContent = soundsEnabled ? d.soundOn : d.soundOff;
+      document.getElementById("soundIcon").src = generateSoundIcon(soundsEnabled);
+
+      if (!soundsEnabled) {
+           MusicManager.stopLoop(); 
+           AudioManager.stopAll(); 
+      } else {
+          const visibleOverlay = getVisibleOverlayId();
+          if (visibleOverlay && (visibleOverlay === 'startOverlay' || visibleOverlay === 'waitingOverlay' || visibleOverlay === 'gameOverOverlay')) {
+              MusicManager.startLoop(visibleOverlay);
+          }
+      }
+      saveSettings();
+    }
+    document.getElementById("soundToggleBtn").addEventListener("click", toggleSound);
+    document.addEventListener("visibilitychange", ()=>{
+      if(document.hidden){
+        AudioManager.stopAll();
+        MusicManager.stopLoop();
+      } else if(AudioManager.masterGain && soundsEnabled){
+        AudioManager.masterGain.gain.value = 0.5;
+        const visibleOverlay = getVisibleOverlayId();
+        if (visibleOverlay && (visibleOverlay === 'startOverlay' || visibleOverlay === 'waitingOverlay' || visibleOverlay === 'gameOverOverlay')) {
+            MusicManager.startLoop(visibleOverlay);
+        } else if (visibleOverlay === 'gameCanvas' && !gameOver) {
+             AudioManager.setActiveScreen('gameCanvas');
+        }
+      }
+    });
+    let tilt=0, calibratedTilt=0;
+    window.addEventListener("deviceorientation", function(e){
+      if(controlMethod==="rotation") tilt = e.gamma || 0;
+    });
+    let gameOver = false, distance = 0, score = 0;
+    const initialSpeed = 8;
+    let totalTime = 0;
+    const T1 = 11, T2 = 30;
+    function getCurrentSpeed(t){
+      let base;
+      if(t<=T1) base = initialSpeed + t*((13-initialSpeed)/T1);
+      else{
+        let d = Math.min(t-T1, T2-T1);
+        base = 13 + (d/(T2-T1))*(30-13);
+      }
+      return shieldActive ? Math.min(base, 28) : base;
+    }
+    const laneMarkerHeight = 20*scaleFactor, laneMarkerWidth = 6*scaleFactor, laneMarkerGap = 30;
+    let laneMarkerY = 0;
+    let moveLeft=false, moveRight=false;
+    const leftBtn = document.getElementById("leftBtn"), rightBtn = document.getElementById("rightBtn");
+    document.addEventListener("keydown", e=>{
+      if(controlMethod==="buttons"){
+        if(e.key==="ArrowLeft"){ moveLeft=true; vibrateFeedback(20); }
+        else if(e.key==="ArrowRight"){ moveRight=true; vibrateFeedback(20); }
+      }
+    });
+    document.addEventListener("keyup", e=>{
+      if(controlMethod==="buttons"){
+        if(e.key==="ArrowLeft") moveLeft=false;
+        else if(e.key==="ArrowRight") moveRight=false;
+      }
+    });
+    let globalCurrentSpeed = initialSpeed;
+    let originalCurrentSpeed = initialSpeed;
+    let superSpeedActive = false;
+    let superSpeedTimeLeft = 0;
+
+    class Car {
+      constructor(x, y, w, h, color, isPlayer=false){
+        this.x = x;
+        this.y = y;
+        this.width = w*scaleFactor;
+        this.height = h*scaleFactor;
+        this.baseColor = color;
+        this.color = color;
+        this.wheelAngle = 0;
+        this.isPlayer = isPlayer;
+        this.vx=0;
+      }
+      updatePhysics(){
+        if(!this.isPlayer)return;
+        const baseLat = 6, addLat = (globalCurrentSpeed-initialSpeed)*0.5;
+        const maxLat = baseLat+addLat;
+        let target = 0;
+        if(controlMethod==="rotation"){
+          const thr =5;
+          const eff = tilt-calibratedTilt;
+          if(eff>thr) target = maxLat*0.8*Math.atan((eff-thr)/15);
+          else if(eff< -thr) target = maxLat*0.8*Math.atan((eff+thr)/15);
+        } else {
+          if(moveLeft) target = -maxLat*1.5;
+          else if(moveRight) target = maxLat*1.5;
+        }
+        const sf = controlMethod==="rotation" ? 0.3 : 0.5;
+        this.vx += (target-this.vx)*sf;
+        this.vx *=0.98;
+        this.x += this.vx;
+      }
+      updateWheels(){ this.wheelAngle +=0.5; }
+      draw(){
+        ctx.save();
+        const bodyX = this.x, bodyY = this.y;
+        const bodyW = this.width, bodyH = this.height;
+        ctx.fillStyle = this.baseColor;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#0ff";
+        ctx.beginPath();
+        ctx.moveTo(bodyX+bodyW*0.1, bodyY+bodyH*0.4);
+        ctx.lineTo(bodyX+bodyW*0.3, bodyY+bodyH*0.3);
+        ctx.quadraticCurveTo(bodyX+bodyW*0.5, bodyY+bodyH*0.2, bodyX+bodyW*0.7, bodyY+bodyH*0.3);
+        ctx.lineTo(bodyX+bodyW*0.9, bodyY+bodyH*0.4);
+        ctx.quadraticCurveTo(bodyX+bodyW, bodyY+bodyH*0.45, bodyX+bodyW*0.9, bodyY+bodyH*0.55);
+        ctx.lineTo(bodyX+bodyW*0.9, bodyY+bodyH*0.7);
+        ctx.quadraticCurveTo(bodyX+bodyW*0.8, bodyY+bodyH*0.85, bodyX+bodyW*0.5, bodyY+bodyH*0.85);
+        ctx.quadraticCurveTo(bodyX+bodyW*0.2, bodyY+bodyH*0.85, bodyX+bodyW*0.1, bodyY+bodyH*0.7);
+        ctx.lineTo(bodyX+bodyW*0.1, bodyY+bodyH*0.55);
+        ctx.quadraticCurveTo(bodyX, bodyY+bodyH*0.45, bodyX+bodyW*0.1, bodyY+bodyH*0.4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+        ctx.save();
+        ctx.fillStyle = "rgba(255,255,255,0.15)";
+        ctx.beginPath();
+        ctx.moveTo(bodyX+bodyW*0.35, bodyY+bodyH*0.4);
+        ctx.lineTo(bodyX+bodyW*0.65, bodyY+bodyH*0.4);
+        ctx.lineTo(bodyX+bodyW*0.6, bodyY+bodyH*0.55);
+        ctx.lineTo(bodyX+bodyW*0.4, bodyY+bodyH*0.55);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+        drawWheel(this.x+12*scaleFactor, this.y+this.height-10*scaleFactor, 8*scaleFactor, this.wheelAngle);
+        drawWheel(this.x+this.width-12*scaleFactor, this.y+this.height-10*scaleFactor, 8*scaleFactor, this.wheelAngle);
+        drawHeadlights(this);
+        if(!this.isPlayer) drawEnemyTurbineFlame(this);
+      }
+    }
+    function drawHeadlights(car){
+      const y = car.y+car.height*0.45;
+      [car.x+car.width*0.15, car.x+car.width*0.85].forEach(x=>{
+        ctx.save();
+        const grad = ctx.createRadialGradient(x, y, 2, x, y, 12*scaleFactor);
+        grad.addColorStop(0,"rgba(255,255,224,1)");
+        grad.addColorStop(1,"rgba(255,255,224,0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, 12*scaleFactor,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+    function drawWheel(x, y, r, angle){
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.arc(0,0,r,0,Math.PI*2);
+      ctx.fillStyle = "#444";
+      ctx.fill();
+      ctx.strokeStyle = "#0ff";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-r,0);
+      ctx.lineTo(r,0);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0,-r);
+      ctx.lineTo(0,r);
+      ctx.stroke();
+      ctx.restore();
+    }
+    function drawEnemyTurbineFlame(car){
+      const len = 15+Math.random()*5, w = 10*scaleFactor;
+      const grad = ctx.createLinearGradient(car.x+car.width/2, car.y+car.height, car.x+car.width/2, car.y+car.height+len);
+      grad.addColorStop(0, "rgba(255,150,0,0.8)");
+      grad.addColorStop(1, "rgba(255,0,0,0)");
+      ctx.save();
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(car.x+car.width/2 - w/2, car.y+car.height);
+      ctx.lineTo(car.x+car.width/2, car.y+car.height+len);
+      ctx.lineTo(car.x+car.width/2 + w/2, car.y+car.height);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+    let flameTimer = 0;
+    function drawFlame(car){
+      if(!car.isPlayer)return;
+      const base = 40*scaleFactor, extra = (moveLeft||moveRight)?20*scaleFactor:0;
+      const dyn = 0.5+0.5*Math.sin(flameTimer*0.15);
+      const len = base+extra+30*dyn;
+      const hue = 280;
+      const col = `hsl(${hue},100%,${50+10*dyn}%)`;
+      const g1 = ctx.createLinearGradient(car.x+car.width/2, car.y+car.height, car.x+car.width/2, car.y+car.height+len);
+      g1.addColorStop(0, col);
+      g1.addColorStop(0.5, "rgba(200,0,255,0.7)");
+      g1.addColorStop(1, "rgba(0,0,0,0)");
+      const g2 = ctx.createLinearGradient(car.x+car.width/2, car.y+car.height, car.x+car.width/2, car.y+car.height+len+20);
+      g2.addColorStop(0, "rgba(255,255,255,0.5)");
+      g2.addColorStop(0.7, "rgba(200,0,255,0.3)");
+      g2.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.save();
+      ctx.fillStyle = g1;
+      ctx.beginPath();
+      ctx.moveTo(car.x+car.width/2, car.y+car.height);
+      ctx.lineTo(car.x+car.width/2-20*scaleFactor, car.y+car.height+len);
+      ctx.lineTo(car.x+car.width/2+20*scaleFactor, car.y+car.height+len);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      ctx.save();
+      ctx.globalAlpha = 0.7;
+      ctx.fillStyle = g2;
+      ctx.beginPath();
+      ctx.moveTo(car.x+car.width/2, car.y+car.height);
+      ctx.lineTo(car.x+car.width/2-25*scaleFactor, car.y+car.height+len+10);
+      ctx.lineTo(car.x+car.width/2+25*scaleFactor, car.y+car.height+len+10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      for(let i=0;i<5;i++){
+        ctx.save();
+        ctx.fillStyle = `rgba(255,255,255,${0.5+Math.random()*0.5})`;
+        ctx.beginPath();
+        ctx.arc(car.x+car.width/2+(Math.random()-0.5)*40*scaleFactor, car.y+car.height+len+Math.random()*20, Math.random()*2+1, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    class Bullet {
+      constructor(x, y){ this.x = x; this.y = y; this.radius = 5*scaleFactor; this.speed = 30; }
+      update(dt){ this.y -= this.speed; }
+      draw(){
+        ctx.save();
+        const grad = ctx.createRadialGradient(this.x, this.y, this.radius*0.2, this.x, this.y, this.radius);
+        grad.addColorStop(0, "#ff6600");
+        grad.addColorStop(0.5, "#ff3300");
+        grad.addColorStop(1, "rgba(255,0,0,0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    let bullets = [], bulletCooldown = 0.12, lastBulletTime = 0;
+    function trySpawnBullet(ct){
+      if(shieldActive && ct - lastBulletTime > bulletCooldown){
+        bullets.push(new Bullet(playerCar.x + playerCar.width/2, playerCar.y + playerCar.height  * 1));
+        lastBulletTime = ct;
+        AudioManager.playBulletSound();
+      }
+    }
+    class Explosion {
+      constructor(x, y){ this.x=x; this.y=y; this.radius=0; this.maxRadius=30*scaleFactor; this.opacity=1; }
+      update(dt){ this.radius += 100*dt; this.opacity -= 2*dt; }
+      draw(){
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,69,0,${this.opacity})`;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    let explosions = [];
+    const playerCar = new Car(window.innerWidth/2 -20*scaleFactor, 370, 40, 70, "#0ff", true);
+    let enemyCars = [];
+    const enemyColors = ["#ff073a", "#ff8c00", "#8a2be2"];
+    function createEnemyCar(){
+      const lane = lanes[Math.floor(Math.random()*lanes.length)];
+      enemyCars.push(new Car(lane, -Math.random()*300 -70, 40, 70, enemyColors[Math.floor(Math.random()*enemyColors.length)]));
+    }
+    for(let i=1;i<3;i++) createEnemyCar();
+    class Coin {
+      constructor(x,y){ this.x=x; this.y=y; this.size = 25*scaleFactor; this.rotation=0; }
+      update(dt){
+        if(magnetActive){
+          const targetX = playerCar.x+playerCar.width/2;
+          const targetY = playerCar.y+playerCar.height/2;
+          this.x += (targetX - this.x)*0.1;
+          this.y += (targetY - this.y)*0.1;
+        } else {
+          this.y += globalCurrentSpeed*0.5;
+        }
+        this.rotation += dt*2;
+      }
+      draw(){
+        ctx.save();
+        ctx.translate(this.x+this.size/2, this.y+this.size/2);
+        ctx.rotate(this.rotation);
+        const grad = ctx.createRadialGradient(0,0,this.size*0.1, 0,0,this.size/2);
+        grad.addColorStop(0, "#ffd700");
+        grad.addColorStop(0.5, "#ffc107");
+        grad.addColorStop(1, "#ff9800");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0,0,this.size/2,0,Math.PI*2);
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+    const coins = [];
+    let coinSpawnIntervalId = null;
+
+    function startCoinSpawning() {
+        if (coinSpawnIntervalId) clearInterval(coinSpawnIntervalId); 
+        coinSpawnIntervalId = setInterval(() => {
+            if (!isSoundOrCoinActionDisabled()) { 
+                spawnCoin();
+            }
+        }, 8000);
+    }
+
+    function stopCoinSpawning() {
+        if (coinSpawnIntervalId) {
+            clearInterval(coinSpawnIntervalId);
+            coinSpawnIntervalId = null;
+        }
+    }
+
+    function spawnCoin(){
+      const x = lanes[Math.floor(Math.random()*lanes.length)];
+      coins.push(new Coin(x, -Math.random()*300-70));
+    }
+    let nextMagnetSpawnDistance = 1100;
+    let magnetActive = false, magnetEffectTimeLeft = 50;
+    class MagnetPiece {
+      constructor(x,y){ this.x=x; this.y=y; this.size = 25*scaleFactor; this.rotation=0; }
+      update(dt){ this.y += globalCurrentSpeed*0.5; this.rotation+= dt*2; }
+      draw(){
+        ctx.save();
+        ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
+        ctx.rotate(this.rotation);
+        const s = this.size / 2; 
+
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.3, s * 0.7); 
+        ctx.bezierCurveTo(-s * 0.3, s * 1.1, s * 0.3, s * 1.1, s * 0.3, s * 0.7); 
+        ctx.lineTo(s * 0.3, -s * 0.2); 
+        ctx.quadraticCurveTo(s * 0.3, -s * 0.5, s * 0.6, -s * 0.5); 
+        ctx.lineTo(s * 0.6, -s * 0.8); 
+        ctx.lineTo(s * 0.9, -s * 0.8); 
+        ctx.lineTo(s * 0.9, -s * 0.2); 
+        ctx.quadraticCurveTo(s * 0.9, s * 0.1, s * 0.6, s * 0.1);
+        ctx.lineTo(s * 0.6, s * 0.7); 
+        ctx.bezierCurveTo(s * 0.6, s * 1.4, -s * 0.6, s * 1.4, -s * 0.6, s * 0.7);
+        ctx.lineTo(-s * 0.6, s * 0.1);
+        ctx.quadraticCurveTo(-s * 0.9, s*0.1, -s*0.9, -s*0.2);
+        ctx.lineTo(-s * 0.9, -s * 0.8);
+        ctx.lineTo(-s * 0.6, -s * 0.8);
+        ctx.lineTo(-s * 0.6, -s * 0.5);
+        ctx.quadraticCurveTo(-s * 0.3, -s*0.5, -s*0.3, -s*0.2);
+        ctx.closePath();
+
+        ctx.fillStyle = '#d32f2f'; 
+        ctx.shadowColor = '#ff6b6b';
+        ctx.shadowBlur = 15;
+        ctx.fill();
+
+        ctx.fillStyle = '#f44336'; 
+        ctx.beginPath(); 
+        ctx.rect(-s*0.9, -s*0.8, s*0.3, s*0.3);
+        ctx.fill();
+        ctx.beginPath(); 
+        ctx.rect(s*0.6, -s*0.8, s*0.3, s*0.3);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(-s * 0.5, -s * 0.6);
+        ctx.quadraticCurveTo(0, -s*0.75, s * 0.5, -s * 0.6);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = this.size * 0.05;
+        ctx.stroke();
+
+        ctx.shadowBlur = 0; 
+        ctx.restore();
+      }
+    }
+    const magnetPieces = [];
+    let nextProtectionSpawnDistance = 1500;
+    let protectionActive = false, protectionTimeLeft = 0;
+    const protectionPieces = [];
+    class ProtectionPiece {
+      constructor(x,y){ this.x=x; this.y=y; this.size = 25*scaleFactor; this.rotation=0; }
+      update(dt){ this.y += globalCurrentSpeed*0.5; this.rotation += dt*2; }
+      draw(){
+        ctx.save();
+        ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
+        ctx.rotate(this.rotation);
+        const s = this.size / 2; 
+
+        ctx.beginPath();
+        ctx.moveTo(0, -s); 
+        ctx.lineTo(s * 0.85, -s * 0.5); 
+        ctx.lineTo(s * 0.85, s * 0.3);  
+        ctx.quadraticCurveTo(s * 0.85, s * 0.7, s * 0.5, s * 0.85); 
+        ctx.lineTo(0, s);               
+        ctx.lineTo(-s * 0.5, s * 0.85); 
+        ctx.quadraticCurveTo(-s * 0.85, s * 0.7, -s * 0.85, s * 0.3); 
+        ctx.lineTo(-s * 0.85, -s * 0.5); 
+        ctx.closePath();
+
+        const outerGradient = ctx.createLinearGradient(0, -s, 0, s);
+        outerGradient.addColorStop(0, '#ffa726'); 
+        outerGradient.addColorStop(0.5, '#fb8c00'); 
+        outerGradient.addColorStop(1, '#ef6c00'); 
+
+        ctx.fillStyle = outerGradient;
+        ctx.shadowColor = '#ffd180'; 
+        ctx.shadowBlur = 20;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(0, -s * 0.7);
+        ctx.lineTo(s * 0.65, -s * 0.35);
+        ctx.lineTo(s * 0.65, s * 0.15);
+        ctx.quadraticCurveTo(s * 0.65, s * 0.45, s * 0.35, s * 0.6);
+        ctx.lineTo(0, s * 0.75);
+        ctx.lineTo(-s * 0.35, s * 0.6);
+        ctx.quadraticCurveTo(-s * 0.65, s * 0.45, -s * 0.65, s * 0.15);
+        ctx.lineTo(-s * 0.65, -s * 0.35);
+        ctx.closePath();
+
+        const innerGradient = ctx.createLinearGradient(0, -s*0.7, 0, s*0.7);
+        innerGradient.addColorStop(0, '#ffe0b2'); 
+        innerGradient.addColorStop(0.5, '#ffcc80'); 
+        innerGradient.addColorStop(1, '#ffb74d'); 
+
+        ctx.fillStyle = innerGradient;
+        ctx.strokeStyle = '#e65100'; 
+        ctx.lineWidth = this.size * 0.04;
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(0, -s * 0.05, s * 0.25, 0, Math.PI * 2);
+        const gemGradient = ctx.createRadialGradient(s*0.05, -s*0.1, s*0.05, 0, 0, s*0.25);
+        gemGradient.addColorStop(0, '#ffffff');
+        gemGradient.addColorStop(0.3, '#ffeb3b'); 
+        gemGradient.addColorStop(1, '#f57f17'); 
+        ctx.fillStyle = gemGradient;
+        ctx.fill();
+        ctx.strokeStyle = '#ef6c00';
+        ctx.lineWidth = this.size * 0.02;
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.restore();
+      }
+    }
+    let nextPointsBoostSpawnDistance = 2300;
+    const pointsBoostPieces = [];
+    class PointsBoostPiece {
+      constructor(x,y){ this.x=x; this.y=y; this.size = 25*scaleFactor; this.rotation=0; }
+      update(dt){ this.y += globalCurrentSpeed*0.5; this.rotation += dt*2; }
+      draw(){
+        ctx.save();
+        ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
+        ctx.rotate(this.rotation);
+        const s = this.size / 2; 
+
+        ctx.beginPath();
+        ctx.arc(0, 0, s, 0, Math.PI * 2);
+        const outerRingGradient = ctx.createRadialGradient(0, 0, s * 0.7, 0, 0, s);
+        outerRingGradient.addColorStop(0, '#f06292'); 
+        outerRingGradient.addColorStop(1, '#e91e63'); 
+        ctx.fillStyle = outerRingGradient;
+        ctx.shadowColor = '#ff80ab'; 
+        ctx.shadowBlur = 15;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, s * 0.75, 0, Math.PI * 2);
+        const middleRingGradient = ctx.createRadialGradient(0, 0, s * 0.45, 0, 0, s * 0.75);
+        middleRingGradient.addColorStop(0, '#ffffff'); 
+        middleRingGradient.addColorStop(1, '#f8bbd0'); 
+        ctx.fillStyle = middleRingGradient;
+        ctx.shadowBlur = 10; 
+        ctx.shadowColor = '#ffffff';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, s * 0.4, 0, Math.PI * 2);
+        const innerMostGradient = ctx.createRadialGradient(s*0.1, -s*0.1, 0, 0, 0, s * 0.4);
+        innerMostGradient.addColorStop(0, '#c51162'); 
+        innerMostGradient.addColorStop(0.7, '#e91e63'); 
+        innerMostGradient.addColorStop(1, '#f06292'); 
+        ctx.fillStyle = innerMostGradient;
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = '#ad1457';
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.lineWidth = this.size * 0.05;
+        const lineLength = s * 0.9;
+        const gap = s * 0.45; 
+
+        for (let i = 0; i < 4; i++) {
+            ctx.beginPath();
+            const angle = (i * Math.PI / 2) + (Math.PI / 4); 
+            const startX = Math.cos(angle) * gap;
+            const startY = Math.sin(angle) * gap;
+            const endX = Math.cos(angle) * lineLength;
+            const endY = Math.sin(angle) * lineLength;
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+        ctx.restore();
+      }
+    }
+    function drawRoad(){
+      const grad = ctx.createLinearGradient(roadX,0,roadX+roadWidth,0);
+      grad.addColorStop(0, "#111");
+      grad.addColorStop(0.5, "#333");
+      grad.addColorStop(1, "#111");
+      ctx.fillStyle = grad;
+      ctx.fillRect(roadX,0,roadWidth, window.innerHeight);
+      ctx.fillStyle = "#0ff";
+      ctx.fillRect(roadX-4*scaleFactor,0,4*scaleFactor, window.innerHeight);
+      ctx.fillRect(roadX+roadWidth,0,4*scaleFactor, window.innerHeight);
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = "#0ff";
+      let y = laneMarkerY;
+      while(y<window.innerHeight){
+        ctx.fillRect(window.innerWidth/2 - laneMarkerWidth/2, y, laneMarkerWidth, 20*scaleFactor);
+        y += 20*scaleFactor+30;
+      }
+      ctx.shadowBlur = 0;
+    }
+    class Building {
+      constructor(x,y,w,h,color,winColor){
+        this.x=x; this.y=y; this.width=w; this.height=h;
+        this.color = color; this.windowColor = winColor;
+      }
+      draw(ctx){
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = this.windowColor;
+        const sz = 8*scaleFactor, pad = 5*scaleFactor;
+        const cols = Math.floor((this.width-pad)/(sz+pad));
+        const rows = Math.floor((this.height-pad)/(sz+pad));
+        for(let i=0;i<cols;i++){
+          for(let j=0;j<rows;j++){
+            const wx = this.x+pad+i*(sz+pad);
+            const wy = this.y+pad+j*(sz+pad);
+            ctx.fillRect(wx,wy,sz,sz);
+          }
+        }
+      }
+    }
+    let buildingsOffset = 0, leftBuildings = [], rightBuildings = [];
+    function initBuildings(){
+      leftBuildings = [];
+      rightBuildings = [];
+      const leftArea = roadX, rightArea = window.innerWidth - (roadX+roadWidth);
+      for(let i=-1;i<12;i++){
+        const w = (40+Math.random()*20)*scaleFactor;
+        const h = (100+Math.random()*150)*scaleFactor;
+        const bx = Math.random()*(leftArea-w);
+        leftBuildings.push(new Building(bx, i*130*scaleFactor+buildingsOffset, w, h, "#222", "#0ff"));
+        const w2 = (40+Math.random()*20)*scaleFactor;
+        const h2 = (100+Math.random()*150)*scaleFactor;
+        const bx2 = roadX+roadWidth+Math.random()*(rightArea-w2);
+        rightBuildings.push(new Building(bx2, i*130*scaleFactor+buildingsOffset, w2, h2, "#111", "#0ff"));
+      }
+    }
+    initBuildings();
+    function drawBuildings(){
+      leftBuildings.forEach(b=>b.draw(ctx));
+      rightBuildings.forEach(b=>b.draw(ctx));
+      buildingsOffset += 2*scaleFactor;
+      if(buildingsOffset>=130*scaleFactor) buildingsOffset = 0;
+    }
+    function detectCollision(r1, r2){
+      if(superSpeedActive) return false;
+      return r1.x < r2.x+r2.width &&
+             r1.x+r1.width > r2.x &&
+             r1.y < r2.y+r2.height &&
+             r1.y+r1.height > r2.y;
+    }
+    let lastTime = performance.now();
+    
+    function updateDashboard(){
+      const speedFactor = superSpeedActive ? (100 / initialSpeed) : (globalCurrentSpeed / initialSpeed);
+      score = Math.floor((distance/100) * speedFactor);
+      const d = translations[currentLanguage];
+      const distUnit = currentLanguage==="ar"?" كم":" km";
+      document.getElementById("distanceBoard").textContent = d.distance + (distance/1000).toFixed(2) + distUnit;
+      document.getElementById("scoreBoard").textContent = d.score + score;
+      document.getElementById("coinCounter").textContent = d.coins + formatNumber(persistentCoins); // تحديث عداد اللعبة الرئيسي
+      document.getElementById("storeCoinCounter").textContent = d.storeCoinCounter + formatNumber(persistentCoins); // تحديث عداد المتجر
+      const btn = document.getElementById("shieldBtn");
+      btn.style.opacity = (persistentCoins>=8 && !shieldActive)?"1":"0.3";
+      btn.style.filter = persistentCoins<8?"brightness(1.2)":"none";
+
+      const superSpeedBtn = document.getElementById("superSpeedBtn");
+      superSpeedBtn.style.opacity = (superSpeedBatch > 0 && !superSpeedActive) ? "1" : "0.3";
+      superSpeedBtn.style.filter = superSpeedBatch <= 0 ? "brightness(1.2)" : "none";
+
+
+      const currSpeed = superSpeedActive ? 100 : getCurrentSpeed(totalTime);
+      const speedUnit = currentLanguage==="ar"?" م/ث":" m/s";
+      document.getElementById("speedometer").textContent = (currentLanguage==="ar"?"السرعة: ":"Speed: ") + currSpeed.toFixed(1)+speedUnit;
+      globalCurrentSpeed = currSpeed;
+      if(shieldActive){
+        const prog = 100*(1-shieldTimeLeft/30);
+        document.querySelector("#shieldMeter div").style.width = prog+"%";
+      } else {
+        document.querySelector("#shieldMeter div").style.width = "0%";
+      }
+      if(magnetActive){
+        const mProg = 100*(magnetEffectTimeLeft/50);
+        document.querySelector("#magnetMeter div").style.width = mProg+"%";
+      } else {
+        document.querySelector("#magnetMeter div").style.width = "0%";
+      }
+      if(protectionActive){
+        const pProg = 100*(protectionTimeLeft/15);
+        document.querySelector("#protectionMeter div").style.width = pProg+"%";
+      } else {
+        document.querySelector("#protectionMeter div").style.width = "0%";
+      }
+      document.querySelector(".productQuantity").textContent = d.productQuantity + magnetBatch;
+      document.querySelector(".protectionProductQuantity").textContent = d.productQuantity + protectionBatch;
+      document.querySelector(".pointsBoostProductQuantity").textContent = d.productQuantity + pointsBoostBatch;
+      document.querySelector(".antibioticProductQuantity").textContent = d.productQuantity + antibioticBatch;
+      document.querySelector(".superSpeedProductQuantity").textContent = d.productQuantity + superSpeedBatch;
+    }
+    function showGameOver(){
+      AudioManager.stopAllGameSounds(); 
+      MusicManager.stopLoop();
+      MusicManager.startLoop("gameOverOverlay"); 
+      const d = translations[currentLanguage];
+      const distUnit = currentLanguage==="ar"?" كم":" km";
+      const currScore = score;
+      const currDist = (distance/1000).toFixed(2);
+      let bestScore = parseInt(localStorage.getItem("bestScore")||"0");
+      let bestDist = parseFloat(localStorage.getItem("bestDistance")||"0");
+
+      if(currScore > bestScore){ bestScore = currScore; localStorage.setItem("bestScore", bestScore); }
+      if(parseFloat(currDist) > bestDist){ bestDist = currDist; localStorage.setItem("bestDistance", bestDist); }
+
+      const currentRankInfo = getPlayerRank(currScore);
+      const currentRankName = currentLanguage==="ar" ? currentRankInfo.name_ar : currentRankInfo.name_en;
+
+      let rankHistory = JSON.parse(localStorage.getItem("rankHistory") || "[]");
+      if (currentRankInfo.rankIndex >=0 && score >= (currentRankInfo.rankIndex * 1000) ) {
+          const actualRankNameFromSystem = currentLanguage === "ar" ? translations.ar.rankNames[currentRankInfo.rankIndex] : translations.en.rankNames[currentRankInfo.rankIndex];
+          if(!rankHistory.includes(actualRankNameFromSystem)){
+            rankHistory.push(actualRankNameFromSystem);
+            localStorage.setItem("rankHistory", JSON.stringify(rankHistory));
+          }
+      }
+      localStorage.setItem("highestRank", currentRankName); 
+
+      document.getElementById("featuredScore").innerHTML = "<strong>" + (currentLanguage==="ar"?"أفضل نتيجة: ":"Best Score: ") + bestScore + "</strong>";
+      document.getElementById("achievementsText").innerHTML = d.score+currScore+"<br>"+d.distance+currDist+distUnit;
+      document.getElementById("playerRank").textContent = (currentLanguage==="ar"?"رتبتك الحالية: ":"Current Rank: ") + currentRankInfo.icon + " " + currentRankName + " (" + d.level + " " + currentRankInfo.globalLevel + ")";
+      
+      showOverlay('gameOverOverlay'); 
+    }
+
+    let resumeTimer;
+    function showResumeOverlay() {
+        if (antibioticBatch > 0) {
+            showOverlay("resumeOverlay"); 
+            resumeTimer = setTimeout(() => {
+                hideResumeOverlay();
+                showGameOver();
+            }, 5000);
+        } else {
+            showGameOver();
+        }
+    }
+
+    function hideResumeOverlay() {
+        document.getElementById("resumeOverlay").style.display = "none"; 
+        clearTimeout(resumeTimer);
+    }
+
+    function resumeGame() {
+        if (antibioticBatch > 0) {
+            antibioticBatch--;
+            localStorage.setItem("antibioticBatch", antibioticBatch);
+            updateDashboard();
+            updateLanguage();
+            hideResumeOverlay();
+            gameOver = false;
+            enemyCars = [];
+            protectionActive = true;
+            protectionTimeLeft = 3;
+            AudioManager.setActiveScreen('gameCanvas'); 
+            startCoinSpawning(); 
+
+            setTimeout(() => {
+                lastTime = performance.now();
+                requestAnimationFrame(gameLoop);
+                setTimeout(() => {
+                    for(let i=0;i<3;i++) createEnemyCar();
+                }, 3000);
+            }, 100);
+        } else {
+            hideResumeOverlay();
+            showGameOver();
+        }
+    }
+    document.getElementById("resumeGameBtn").addEventListener("click", resumeGame);
+
+
+    function resetGame(){
+      gameOver=false;
+      distance=0;
+      score=0;
+      totalTime=0;
+      laneMarkerY=0;
+      flameTimer=0;
+      shieldActive=false;
+      shieldTimeLeft=0;
+      magnetActive=false;
+      magnetEffectTimeLeft=50;
+      protectionActive=false;
+      protectionTimeLeft=0;
+      superSpeedActive = false;
+      superSpeedTimeLeft = 0;
+      playerCar.x = window.innerWidth/2 -20*scaleFactor;
+      playerCar.vx = 0;
+      enemyCars.length=0;
+      coins.length=0;
+      magnetPieces.length=0;
+      protectionPieces.length=0;
+      pointsBoostPieces.length=0;
+      bullets.length=0;
+      explosions=[];
+      nextMagnetSpawnDistance = 1100;
+      nextProtectionSpawnDistance = 1500;
+      nextPointsBoostSpawnDistance = 2300;
+      for(let i=1;i<3;i++) createEnemyCar();
+      updateDashboard();
+      updateLanguage();
+    }
+    document.getElementById("restartBtn").addEventListener("click", ()=>{
+      resetGame();
+      showOverlay("startOverlay"); 
+    });
+    function showWaitingScreen(){
+      calibratedTilt = tilt;
+      showOverlay("waitingOverlay"); 
+      const bar = document.querySelector("#waitingOverlay .progress-bar");
+      bar.style.animation = "none";
+      void bar.offsetWidth;
+      bar.style.animation = "progressFill 5s linear forwards";
+      setTimeout(()=>{
+        document.getElementById("waitingOverlay").style.display="none"; 
+        MusicManager.stopLoop();
+        if(!AudioManager.initialized) AudioManager.init();
+        if(AudioManager.audioCtx && AudioManager.audioCtx.state === "suspended") {
+           AudioManager.audioCtx.resume();
+        }
+        if(AudioManager.masterGain) AudioManager.masterGain.gain.value = soundsEnabled?0.5:0;
+        lastTime = performance.now();
+        AudioManager.setActiveScreen('gameCanvas'); 
+        startCoinSpawning(); 
+        requestAnimationFrame(gameLoop);
+      },5000);
+    }
+    let shieldActive = false, shieldTimeLeft = 0;
+    document.getElementById("shieldBtn").addEventListener("click", ()=>{
+      if(persistentCoins>=8 && !shieldActive){
+        shieldActive = true;
+        shieldTimeLeft = 30;
+        persistentCoins-=8;
+        localStorage.setItem("coinBalance", persistentCoins);
+        console.log("Manual Shield activated");
+        const b = document.getElementById("shieldBtn");
+        b.style.background = "linear-gradient(145deg, #ff69b4, #ff1493)";
+        b.style.borderColor = "#ff69b4";
+        gsap.fromTo("#shieldBtn",{scale:1.2},{scale:1,duration:0.3});
+        updateDashboard();
+      }
+    });
+    document.getElementById("superSpeedBtn").addEventListener("click", ()=>{
+        if(superSpeedBatch > 0 && !superSpeedActive){
+            superSpeedActive = true;
+            originalCurrentSpeed = globalCurrentSpeed;
+            globalCurrentSpeed = 100;
+            superSpeedBatch--;
+            localStorage.setItem("superSpeedBatch", superSpeedBatch);
+            console.log("Super Speed activated");
+            enemyCars = [];
+            superSpeedTimeLeft = 10;
+            const superSpeedTimer = setInterval(() => {
+                superSpeedTimeLeft -= 1;
+                if (superSpeedTimeLeft <= 0) {
+                    clearInterval(superSpeedTimer);
+                    superSpeedActive = false;
+                    globalCurrentSpeed = originalCurrentSpeed;
+                    console.log("Super Speed ended");
+                    setTimeout(() => {
+                         for(let i=0;i<3;i++) createEnemyCar();
+                    }, 3000);
+                }
+                 updateDashboard();
+            }, 1000);
+            updateDashboard();
+            updateLanguage();
+        }
+    });
+    document.getElementById("buyMagnetBtn").addEventListener("click", ()=>{
+      if(persistentCoins>=100){
+        persistentCoins-=100;
+        magnetBatch +=20;
+        localStorage.setItem("coinBalance", persistentCoins);
+        localStorage.setItem("magnetBatch", magnetBatch);
+        updateLanguage();
+        updateDashboard();
+        AudioManager.playSuccessSound();
+        alert(currentLanguage==="ar"?"تم شراء دفعة مغناطيس!":"Magnet batch purchased!");
+      } else { alert(currentLanguage==="ar"?"رصيد غير كافٍ":"Not enough coins"); }
+    });
+    document.getElementById("buyProtectionBtn").addEventListener("click", ()=>{
+      if(persistentCoins>=50){
+        persistentCoins-=50;
+        protectionBatch +=10;
+        localStorage.setItem("coinBalance", persistentCoins);
+        localStorage.setItem("protectionBatch", protectionBatch);
+        updateLanguage();
+        updateDashboard();
+        AudioManager.playSuccessSound();
+        alert(currentLanguage==="ar"?"تم شراء دفعة حماية!":"Protection batch purchased!");
+      } else { alert(currentLanguage==="ar"?"رصيد غير كافٍ":"Not enough coins"); }
+    });
+    document.getElementById("buyPointsBoostBtn").addEventListener("click", ()=>{
+      if(persistentCoins>=100){
+        persistentCoins-=100;
+        pointsBoostBatch +=3;
+        localStorage.setItem("coinBalance", persistentCoins);
+        localStorage.setItem("pointsBoostBatch", pointsBoostBatch);
+        updateLanguage();
+        updateDashboard();
+        AudioManager.playSuccessSound();
+        alert(currentLanguage==="ar"?"تم شراء دفعة تعزيز النقاط!":"Points boost batch purchased!");
+      } else { alert(currentLanguage==="ar"?"رصيد غير كافٍ":"Not enough coins"); }
+    });
+    document.getElementById("buyAntibioticBtn").addEventListener("click", ()=>{
+        if(persistentCoins>=100){
+            persistentCoins-=100;
+            antibioticBatch +=3;
+            localStorage.setItem("coinBalance", persistentCoins);
+            localStorage.setItem("antibioticBatch", antibioticBatch);
+            updateLanguage();
+            updateDashboard();
+            AudioManager.playSuccessSound();
+            alert(currentLanguage==="ar"?"تم شراء دفعة مضاد حيوي!":"Antibiotic batch purchased!");
+        } else { alert(currentLanguage==="ar"?"رصيد غير كافٍ":"Not enough coins"); }
+    });
+    document.getElementById("buySuperSpeedBtn").addEventListener("click", ()=>{
+        if(persistentCoins>=100){
+            persistentCoins-=100;
+            superSpeedBatch +=5;
+            localStorage.setItem("coinBalance", persistentCoins);
+            localStorage.setItem("superSpeedBatch", superSpeedBatch);
+            updateLanguage();
+            updateDashboard();
+            AudioManager.playSuccessSound();
+            alert(currentLanguage==="ar"?"تم شراء دفعة تسريع فائق!":"Super Speed batch purchased!");
+        } else { alert(currentLanguage==="ar"?"رصيد غير كافٍ":"Not enough coins"); }
+        const myAchievementsPopupTitleEl = document.getElementById("myAchievementsPopupTitle");
+if(myAchievementsPopupTitleEl) {
+    myAchievementsPopupTitleEl.textContent = d.myAchievementsBtn; // Title for the popup itself
+    if (currentLanguage === 'en') {
+        myAchievementsPopupTitleEl.style.fontSize = '18px'; // حجم أصغر للغة الإنجليزية
+    } else {
+        myAchievementsPopupTitleEl.style.fontSize = '24px'; // الحجم الافتراضي للعربية (أو اتركه ليستلم من CSS)
+    }
+}
+    });
+
+
+    function updateBullets(dt){
+      for(let i=bullets.length-1;i>=0;i--){
+        const bl = bullets[i];
+        bl.update(dt);
+        if(bl.y < -10){ bullets.splice(i,1); continue; }
+        for(let j=enemyCars.length-1;j>=0;j--){
+          const ec = enemyCars[j];
+          if(bl.x+bl.radius>ec.x && bl.x-bl.radius<ec.x+ec.width &&
+             bl.y+bl.radius>ec.y && bl.y-bl.radius<ec.y+ec.height){
+            enemyCars.splice(j,1);
+            bullets.splice(i,1);
+            AudioManager.playExplosionSound();
+            vibrateFeedback(50);
+            explosions.push(new Explosion(ec.x+ec.width/2, ec.y+ec.height/2));
+            if (!superSpeedActive) createEnemyCar();
+            break;
+          }
+        }
+      }
+    }
+    function updateExplosions(dt){
+      for(let i=explosions.length-1;i>=0;i--){
+        const ex = explosions[i];
+        ex.update(dt);
+        if(ex.opacity<=0) explosions.splice(i,1);
+      }
+    }
+    function drawExplosions(){ explosions.forEach(exp=>exp.draw()); }
+    function updateProtectionPieces(dt){
+      for(let i=protectionPieces.length-1;i>=0;i--){
+        const pp = protectionPieces[i];
+        pp.update(dt);
+      if (detectCollision(playerCar, {x: pp.x, y: pp.y, width: pp.size, height: pp.size})) {
+    if (!protectionActive) { // فقط إذا لم تكن الحماية نشطة بالفعل
+        protectionActive = true;
+        protectionTimeLeft = 15; // مدة تأثير الحماية
+        console.log("Protection Shield Activated from pickup!");
+
+        if (protectionBatch > 0) { // تحقق أن هناك كمية ليتم خصمها
+             protectionBatch--;
+             localStorage.setItem("protectionBatch", protectionBatch);
+             console.log("Protection batch decremented. Remaining: ", protectionBatch);
+        }
+    }
+    protectionPieces.splice(i, 1);
+    updateDashboard(); // لتحديث HUD والكميات في المتجر فورًا
+} else if (pp.y > window.innerHeight) {
+    protectionPieces.splice(i, 1);
+}
+      }
+    }
+    function updatePointsBoostPieces(dt){
+      for(let i=pointsBoostPieces.length-1;i>=0;i--){
+        const pb = pointsBoostPieces[i];
+        pb.update(dt);
+        // داخل دالة updatePointsBoostPieces(dt)
+// ... (الكود الموجود لـ pb.update(dt)) ...
+
+if (detectCollision(playerCar, {x: pb.x, y: pb.y, width: pb.size, height: pb.size})) {
+    score += 130; // أو أي قيمة نقاط تريدها
+    console.log("Points Boost collected! +130 points");
+    
+    if (pointsBoostBatch > 0) { // تحقق أن هناك كمية ليتم خصمها
+        pointsBoostBatch--;
+        localStorage.setItem("pointsBoostBatch", pointsBoostBatch);
+        console.log("Points Boost batch decremented. Remaining: ", pointsBoostBatch);
+    }
+    
+    pointsBoostPieces.splice(i, 1);
+    updateDashboard(); // لتحديث HUD والكميات في المتجر فورًا
+} else if (pb.y > window.innerHeight) {
+    pointsBoostPieces.splice(i, 1);
+}
+      }
+    }
+    function updateMagnetPieces(dt){
+        for(let i=magnetPieces.length-1;i>=0;i--){
+            const mp = magnetPieces[i];
+            if(magnetActive){
+                const targetX = playerCar.x+playerCar.width/2;
+                const targetY = playerCar.y+playerCar.height/2;
+                mp.x += (targetX-mp.x)*0.1;
+                mp.y += (targetY-mp.y)*0.1;
+            } else { mp.update(dt); }
+
+           if (detectCollision(playerCar, {x: mp.x, y: mp.y, width: mp.size, height: mp.size})) {
+                if (!magnetActive) { // فقط إذا لم يكن المغناطيس نشطًا بالفعل
+        magnetActive = true;
+        magnetEffectTimeLeft = 50; // مدة تأثير المغناطيس
+        console.log("Magnet Activated from pickup!");
+        
+        if (magnetBatch > 0) { // تحقق أن هناك كمية ليتم خصمها
+            magnetBatch--;
+            localStorage.setItem("magnetBatch", magnetBatch);
+            console.log("Magnet batch decremented. Remaining: ", magnetBatch);
+        }
+    }
+    magnetPieces.splice(i, 1);
+    updateDashboard(); // لتحديث HUD والكميات في المتجر فورًا
+} else if (mp.y > window.innerHeight) {
+    magnetPieces.splice(i, 1);
+}
+        }
+    }
+
+    function gameLoop(currentTime){
+      if(gameOver && document.getElementById("resumeOverlay").style.display !== "flex") return;
+
+      const dt = (currentTime - lastTime)/1000;
+      lastTime = currentTime;
+      totalTime += dt;
+
+      const currSpeed = superSpeedActive ? 100 : getCurrentSpeed(totalTime);
+      distance += currSpeed*dt;
+      laneMarkerY += currSpeed*0.5;
+      if(laneMarkerY>laneMarkerHeight+laneMarkerGap) laneMarkerY = 0;
+      flameTimer++;
+      playerCar.updatePhysics();
+      if(playerCar.x < roadX+5*scaleFactor){
+        playerCar.x = roadX+5*scaleFactor;
+        playerCar.vx = 0;
+      }
+      if(playerCar.x > roadX+roadWidth-playerCar.width-5*scaleFactor){
+        playerCar.x = roadX+roadWidth-playerCar.width-5*scaleFactor;
+        playerCar.vx = 0;
+      }
+      playerCar.updateWheels();
+
+      if(shieldActive){
+        shieldTimeLeft -= dt;
+        trySpawnBullet(currentTime/1000);
+        if(shieldTimeLeft<=0){
+          shieldActive = false;
+          const btn = document.getElementById("shieldBtn");
+          btn.style.background = "linear-gradient(145deg, #00ffff, #004d4d)";
+          btn.style.borderColor = "#0ff";
+          console.log("Manual Shield expired");
+        }
+      }
+      if(magnetActive){
+        magnetEffectTimeLeft -= dt;
+        if(magnetEffectTimeLeft<=0){ magnetActive = false; }
+      }
+      if(protectionActive){
+        protectionTimeLeft -= dt;
+        if(protectionTimeLeft<=0){ protectionActive = false; }
+      }
+
+      if (!superSpeedActive) {
+          enemyCars.forEach(car=>{
+            car.y += currSpeed*0.5;
+            car.updateWheels();
+            if(!protectionActive && detectCollision(playerCar, car)){
+              gameOver = true;
+              AudioManager.stopAllGameSounds(); 
+              AudioManager.playCrash();
+              vibrateFeedback(100);
+              stopCoinSpawning(); 
+              showResumeOverlay();
+            }
+            if(car.y>window.innerHeight){
+              car.x = lanes[Math.floor(Math.random()*lanes.length)];
+              car.y = -Math.random()*300 - car.height;
+            }
+          });
+      } else {
+           enemyCars.forEach(car=>{
+                car.y += 100 * 0.5;
+                car.updateWheels();
+                if(car.y > window.innerHeight){
+                     const index = enemyCars.indexOf(car);
+                     if (index > -1) {
+                         enemyCars.splice(index, 1);
+                     }
+                }
+           });
+      }
+
+      for(let i=coins.length-1;i>=0;i--){
+        const c = coins[i];
+        c.update(dt);
+        if(detectCollision(playerCar, {x:c.x, y:c.y, width:c.size, height:c.size})){
+          persistentCoins++;
+          localStorage.setItem("coinBalance", persistentCoins);
+          AudioManager.playCoinSound();
+          vibrateFeedback(30);
+          coins.splice(i,1);
+        } else if(c.y>window.innerHeight){
+          coins.splice(i,1);
+        }
+      }
+
+      if (magnetBatch > 0 && distance >= nextMagnetSpawnDistance) { // <-- إضافة magnetBatch > 0
+    const x = lanes[Math.floor(Math.random() * lanes.length)];
+    magnetPieces.push(new MagnetPiece(x, -Math.random() * 300 - 70));
+    nextMagnetSpawnDistance += 1100 + Math.random() * 500;
+}
+      if (protectionBatch > 0 && distance >= nextProtectionSpawnDistance) {
+    const x = lanes[Math.floor(Math.random() * lanes.length)];
+    protectionPieces.push(new ProtectionPiece(x, -Math.random() * 300 - 70));
+    nextProtectionSpawnDistance += 1500 + Math.random() * 600;
+}
+      if (pointsBoostBatch > 0 && distance >= nextPointsBoostSpawnDistance) {
+    const x = lanes[Math.floor(Math.random() * lanes.length)];
+    pointsBoostPieces.push(new PointsBoostPiece(x, -Math.random() * 300 - 70));
+    nextPointsBoostSpawnDistance += 2300 + Math.random() * 700;
+    console.log("Points Boost piece spawned, batch available: ", pointsBoostBatch);
+}
+
+      updateMagnetPieces(dt);
+      updateProtectionPieces(dt);
+      updatePointsBoostPieces(dt);
+
+      updateBullets(dt);
+      updateExplosions(dt);
+
+      ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+      initBuildings();
+      drawBuildings();
+      drawRoad();
+      drawFlame(playerCar);
+      coins.forEach(c=>c.draw());
+      enemyCars.forEach(ec=>ec.draw());
+      bullets.forEach(b=>b.draw());
+      magnetPieces.forEach(mp=>mp.draw());
+      protectionPieces.forEach(sp=>sp.draw());
+      pointsBoostPieces.forEach(pb=>pb.draw());
+      drawExplosions();
+      playerCar.draw();
+      updateDashboard();
+      updateRain(dt);
+      drawRain();
+      drawFog();
+
+      if(controlMethod==="rotation"){
+        leftBtn.style.display="none";
+        rightBtn.style.display="none";
+      } else {
+        leftBtn.style.display="block";
+        rightBtn.style.display="block";
+      }
+      AudioManager.updateEngineSound(globalCurrentSpeed);
+
+      if (!gameOver || document.getElementById("resumeOverlay").style.display === "flex") {
+           requestAnimationFrame(gameLoop);
+      }
+    }
+    function checkDeviceAndOrientation(){
+      const over = document.getElementById("unsupportedOverlay");
+      const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+      const isPortrait = window.innerHeight >= window.innerWidth;
+      over.style.display = (isMobile && isPortrait)?"none":"flex";
+      if (over.style.display === "flex") {
+          document.getElementById("initialLoadingOverlay").style.display = "none";
+      }
+    }
+
+    function getVisibleOverlayId() {
+        const overlays = ['startOverlay', 'settingsOverlay', 'achievementsOverlay', 'storeOverlay', 'aboutUsOverlay', 'contactUsOverlay', 'privacyPolicyPopup', 'waitingOverlay', 'gameOverOverlay', 'resumeOverlay', 'initialLoadingOverlay', 'myAchievementsPopup', 'editProfilePopup'];
+        for (const id of overlays) {
+            const element = document.getElementById(id);
+            if (element && (element.style.display === 'flex' || element.style.display === 'block')) {
+                return id;
+            }
+        }
+        if (document.getElementById('gameCanvas').style.display !== 'none' && !gameOver) return 'gameCanvas';
+        return null;
+    }
+
+
+    function finishInitialLoading() {
+        document.getElementById("initialLoadingOverlay").style.display = "none";
+        loadSettings(); 
+        if (!localStorage.getItem('privacyAccepted')) {
+            showOverlay('privacyPolicyPopup');
+        } else {
+            showOverlay('startOverlay');
+        }
+    }
+
+
+    window.addEventListener('load', () => {
+        checkDeviceAndOrientation();
+        if (document.getElementById("unsupportedOverlay").style.display === "none") {
+            setTimeout(finishInitialLoading, 7000); // Simulate loading time
+        }
+    });
+
+    document.getElementById("startBtn").addEventListener("click", ()=>{
+      if(document.getElementById("unsupportedOverlay").style.display==="flex"){
+        alert(currentLanguage==="ar"?"هذه اللعبة مدعومة فقط على الأجهزة المحمولة وبالوضع العمودي.":"This game is supported only on mobile devices in portrait mode.");
+        return;
+      }
+       if (!AudioManager.initialized) AudioManager.init();
+       if(AudioManager.audioCtx && AudioManager.audioCtx.state === "suspended") {
+          AudioManager.audioCtx.resume().then(() => console.log("AudioContext resumed on start click"));
+       }
+      showWaitingScreen(); 
+    });
+
+    function hideAllOverlays() {
+        const overlayIds = [
+            'settingsOverlay', 'achievementsOverlay', 'storeOverlay',
+            'aboutUsOverlay', 'contactUsOverlay', 'startOverlay',
+            'gameOverOverlay', 'waitingOverlay', 'resumeOverlay',
+            'privacyPolicyPopup', 'initialLoadingOverlay',
+            'myAchievementsPopup', 'editProfilePopup'
+        ];
+        overlayIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+        });
+    }
+
+    function showOverlay(overlayIdToShow) {
+        hideAllOverlays();
+        const overlayElement = document.getElementById(overlayIdToShow);
+        if (overlayElement) {
+            overlayElement.style.display = "flex"; 
+        }
+
+        MusicManager.stopLoop(); 
+        AudioManager.stopAllGameSounds(); 
+        stopCoinSpawning(); 
+
+        AudioManager.setActiveScreen(overlayIdToShow); 
+
+        if (overlayIdToShow === 'startOverlay' && localStorage.getItem('privacyAccepted') && soundsEnabled) {
+             MusicManager.startLoop("startOverlay");
+        } else if (overlayIdToShow === 'waitingOverlay' && soundsEnabled) {
+            MusicManager.startLoop("waitingOverlay");
+        } else if (overlayIdToShow === 'gameOverOverlay' && soundsEnabled) {
+            MusicManager.startLoop("gameOverOverlay");
+        }
+    }
+
+
+    document.querySelectorAll(".backBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+             showOverlay('startOverlay');
+        });
+    });
+
+    document.getElementById("privacyPolicyLink").addEventListener("click", (e) => {
+        e.preventDefault();
+        showOverlay('privacyPolicyPopup');
+    });
+    document.getElementById("aboutUsLink").addEventListener("click", (e) => {
+        e.preventDefault();
+        showOverlay('aboutUsOverlay');
+    });
+    document.getElementById("contactUsLink").addEventListener("click", (e) => {
+        e.preventDefault();
+        showOverlay('contactUsOverlay');
+    });
+
+    document.getElementById("agreePrivacyBtn").addEventListener("click", () => {
+        localStorage.setItem('privacyAccepted', 'true');
+        showOverlay('startOverlay'); 
+    });
+
+    document.getElementById("settingsBtn").addEventListener("click", ()=>{
+        showOverlay('settingsOverlay');
+    });
+    
+    // --- Achievements Screen & Popups Logic ---
+    document.getElementById("achievementsBtn").addEventListener("click", ()=>{
+      showOverlay('achievementsOverlay');
+      populateAchievementsScreen(); 
+    });
+
+    function populateAchievementsScreen() {
+        const d = translations[currentLanguage];
+        const bestScore = parseInt(localStorage.getItem("bestScore") || "0");
+        const bestDist = parseFloat(localStorage.getItem("bestDistance") || "0").toFixed(2);
+        const distUnit = currentLanguage === "ar" ? " كم" : " km";
+
+        document.getElementById("achievementsScoreDisplay").textContent = d.achievementsScore + bestScore;
+        document.getElementById("achievementsDistanceDisplay").textContent = d.achievementsDistance + bestDist + distUnit;
+
+        const currentRankInfo = getPlayerRank(bestScore); 
+        document.getElementById("currentRankDisplayTitle").textContent = d.currentRankDisplayTitle;
+        const levelsList = document.getElementById("currentRankLevelsList");
+        levelsList.innerHTML = ""; 
+
+        levelsList.innerHTML += `<li><strong>${currentLanguage === "ar" ? currentRankInfo.name_ar : currentRankInfo.name_en} (${d.level} ${currentRankInfo.globalLevel}) ${currentRankInfo.icon}</strong></li>`;
+
+        currentRankInfo.levelsInCurrentRank.forEach(levelData => {
+            const li = document.createElement("li");
+            li.textContent = `${d.level} ${levelData.level} ${levelData.completed ? '✅' : '❌'}`;
+            levelsList.appendChild(li);
+        });
+
+        document.getElementById("previousRanksDisplayTitle").textContent = d.previousRanksDisplayTitle;
+        const previousRanksListEl = document.getElementById("previousRanksList");
+        previousRanksListEl.innerHTML = ""; 
+        const rankHistory = JSON.parse(localStorage.getItem("rankHistory") || "[]");
+        if (rankHistory.length > 0) {
+            rankHistory.forEach(rankName => {
+                let rankIdx = translations[currentLanguage].rankNames.indexOf(rankName);
+                if(rankIdx === -1 && currentLanguage === 'ar') rankIdx = translations.en.rankNames.indexOf(rankName); 
+                if(rankIdx === -1 && currentLanguage === 'en') rankIdx = translations.ar.rankNames.indexOf(rankName); 
+
+                const icon = rankIcons[rankIdx % rankIcons.length] || "⭐";
+                const li = document.createElement("li");
+                li.textContent = `${icon} ${rankName}`;
+                previousRanksListEl.appendChild(li);
+            });
+        } else {
+            previousRanksListEl.innerHTML = `<li>${currentLanguage === 'ar' ? 'لم تحقق أي رتب بعد.' : 'No ranks achieved yet.'}</li>`;
+        }
+    }
+
+    document.getElementById("myAchievementsBtn").addEventListener("click", () => {
+        hideAllOverlays(); // Ensure others are hidden before showing this one
+        const popup = document.getElementById("myAchievementsPopup");
+        popup.style.display = "flex";
+
+        const d = translations[currentLanguage];
+        const playerName = localStorage.getItem("playerName") || (currentLanguage === "ar" ? "لاعب جديد" : "New Player");
+        const profilePicture = localStorage.getItem("profilePicture") || "https://via.placeholder.com/100?text=Profile";
+        const bestScore = parseInt(localStorage.getItem("bestScore") || "0");
+        const bestDist = parseFloat(localStorage.getItem("bestDistance") || "0").toFixed(2);
+        const distUnit = currentLanguage === "ar" ? " كم" : " km";
+        const rankInfo = getPlayerRank(bestScore);
+        
+        const myAchievementsPopupTitleEl = document.getElementById("myAchievementsPopupTitle");
+        if(myAchievementsPopupTitleEl) myAchievementsPopupTitleEl.textContent = d.myAchievementsBtn;
+
+
+        document.getElementById("popupProfileImage").src = profilePicture;
+        document.getElementById("popupPlayerName").textContent = `${d.achievementsPlayerName} ${playerName}`;
+        document.getElementById("popupPlayerRank").textContent = `${d.achievementsPlayerRank} ${currentLanguage === "ar" ? rankInfo.name_ar : rankInfo.name_en} (${d.level} ${rankInfo.globalLevel}) ${rankInfo.icon}`;
+        document.getElementById("popupPlayerScore").textContent = d.achievementsScore + bestScore;
+        document.getElementById("popupPlayerDistance").textContent = d.achievementsDistance + bestDist + distUnit;
+    });
+
+    document.getElementById("backToAchievementsBtn").addEventListener("click", () => {
+        document.getElementById("myAchievementsPopup").style.display = "none";
+        showOverlay('achievementsOverlay'); 
+        populateAchievementsScreen();
+    });
+
+    document.getElementById("takeAchievementsScreenshotBtn").addEventListener("click", () => {
+        alert(currentLanguage === 'ar' ? 'ميزة لقطة الشاشة قيد التطوير! حاول أخذ لقطة شاشة يدوياً.' : 'Screenshot feature under development! Try a manual screenshot.');
+        // To implement html2canvas, you would first include its script tag in <head>
+        // Then uncomment and use the following:
+        /*
+        if (typeof html2canvas === 'function') {
+            html2canvas(document.getElementById("myAchievementsPopup").querySelector(".popup-content")).then(canvas => {
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = 'nitro_fire_achievements.png';
+                link.click();
+            }).catch(err => {
+                console.error("Screenshot failed:", err);
+                alert("Failed to take screenshot.");
+            });
+        } else {
+            alert("Screenshot library not loaded.");
+        }
+        */
+    });
+
+    document.getElementById("myProfileBtn").addEventListener("click", () => {
+        document.getElementById("myAchievementsPopup").style.display = "none";
+        const popup = document.getElementById("editProfilePopup");
+        popup.style.display = "flex";
+
+        document.getElementById("editPlayerNameInput").value = localStorage.getItem("playerName") || "";
+        document.getElementById("profilePicPreview").src = localStorage.getItem("profilePicture") || "https://via.placeholder.com/100?text=Preview";
+    });
+
+    document.getElementById("cancelEditProfileBtn").addEventListener("click", () => {
+        document.getElementById("editProfilePopup").style.display = "none";
+        document.getElementById("myAchievementsPopup").style.display = "flex"; 
+    });
+
+    document.getElementById("changeProfilePicBtn").addEventListener("click", () => {
+        document.getElementById("profilePicInput").click();
+    });
+
+    let selectedProfileImageDataUrl = null;
+    document.getElementById("profilePicInput").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith("image/")) { // Basic image type check
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("profilePicPreview").src = e.target.result;
+                selectedProfileImageDataUrl = e.target.result; 
+            }
+            reader.readAsDataURL(file);
+        } else if (file) {
+            alert(currentLanguage === 'ar' ? 'يرجى اختيار ملف صورة صالح.' : 'Please select a valid image file.');
+            event.target.value = ""; // Reset file input
+        }
+    });
+
+    document.getElementById("saveProfileBtn").addEventListener("click", () => {
+        const newName = document.getElementById("editPlayerNameInput").value.trim();
+        if (newName) {
+            localStorage.setItem("playerName", newName);
+        } else {
+            localStorage.removeItem("playerName"); // Or set to default
+        }
+        if (selectedProfileImageDataUrl) {
+            localStorage.setItem("profilePicture", selectedProfileImageDataUrl);
+        }
+
+        document.getElementById("editProfilePopup").style.display = "none";
+        
+        // Refresh My Achievements popup content before showing it
+        const d = translations[currentLanguage];
+        const playerName = localStorage.getItem("playerName") || (currentLanguage === "ar" ? "لاعب جديد" : "New Player");
+        const profilePicture = localStorage.getItem("profilePicture") || "https://via.placeholder.com/100?text=Profile";
+        const bestScore = parseInt(localStorage.getItem("bestScore") || "0");
+        const bestDist = parseFloat(localStorage.getItem("bestDistance") || "0").toFixed(2);
+        const distUnit = currentLanguage === "ar" ? " كم" : " km";
+        const rankInfo = getPlayerRank(bestScore);
+
+        document.getElementById("popupProfileImage").src = profilePicture;
+        document.getElementById("popupPlayerName").textContent = `${d.achievementsPlayerName} ${playerName}`;
+        document.getElementById("popupPlayerRank").textContent = `${d.achievementsPlayerRank} ${currentLanguage === "ar" ? rankInfo.name_ar : rankInfo.name_en} (${d.level} ${rankInfo.globalLevel}) ${rankInfo.icon}`;
+        document.getElementById("popupPlayerScore").textContent = d.achievementsScore + bestScore;
+        document.getElementById("popupPlayerDistance").textContent = d.achievementsDistance + bestDist + distUnit;
+        
+        const myAchievementsPopupTitleEl = document.getElementById("myAchievementsPopupTitle");
+        if(myAchievementsPopupTitleEl) myAchievementsPopupTitleEl.textContent = d.myAchievementsBtn;
+
+
+        document.getElementById("myAchievementsPopup").style.display = "flex";
+        selectedProfileImageDataUrl = null; 
+        document.getElementById("profilePicInput").value = ""; 
+    });
+
+
+    document.getElementById("storeBtn").addEventListener("click", ()=>{
+      showOverlay('storeOverlay');
+    });
+
+    const contactMessageInput = document.getElementById("contactMessage");
+    const contactEmailInput = document.getElementById("contactEmail");
+    const sendContactBtn = document.getElementById("sendContactBtn");
+    const contactConfirmationPopup = document.getElementById("contactConfirmationPopup");
+
+    contactMessageInput.addEventListener("input", () => {
+        if (contactMessageInput.value.length > 0) {
+            contactEmailInput.style.display = "block";
+        } else {
+            contactEmailInput.style.display = "none";
+            sendContactBtn.style.display = "none";
+        }
+    });
+
+    contactEmailInput.addEventListener("input", () => {
+        if (contactEmailInput.value.length > 0 && contactEmailInput.checkValidity()) {
+            sendContactBtn.style.display = "block";
+        } else {
+            sendContactBtn.style.display = "none";
+        }
+    });
+
+    sendContactBtn.addEventListener("click", () => {
+        const message = contactMessageInput.value;
+        const email = contactEmailInput.value;
+
+        if (message.trim() === "" || email.trim() === "" || !contactEmailInput.checkValidity()) {
+            alert(currentLanguage === 'ar' ? 'يرجى ملء جميع الحقول بشكل صحيح.' : 'Please fill all fields correctly.');
+            return;
+        }
+
+        const developerEmail = "msmmjrafyk405@gmail.com";
+        console.log(`--- Sending Message ---
+To: ${developerEmail}
+From: ${email}
+Message: ${message}
+-----------------------`);
+
+        contactMessageInput.value = "";
+        contactEmailInput.value = "";
+        contactEmailInput.style.display = "none";
+        sendContactBtn.style.display = "none";
+
+        contactConfirmationPopup.style.display = "block";
+        AudioManager.playSuccessSound();
+        setTimeout(() => {
+            contactConfirmationPopup.style.display = "none";
+        }, 3000);
+    });
+  </script>
+</body>
+</html>
