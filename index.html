@@ -2752,13 +2752,13 @@ function formatNumber(num) {
     let gameOver = false, distance = 0, score = 0;
     const initialSpeed = 8;
     let totalTime = 0;
-    const T1 = 11, T2 = 30;
+    const T1 = 11, T2 = 35;
     function getCurrentSpeed(t){
       let base;
       if(t<=T1) base = initialSpeed + t*((13-initialSpeed)/T1);
       else{
         let d = Math.min(t-T1, T2-T1);
-        base = 13 + (d/(T2-T1))*(30-13);
+        base = 13 + (d/(T2-T1))*(33-13);
       }
       return shieldActive ? Math.min(base, 28) : base;
     }
